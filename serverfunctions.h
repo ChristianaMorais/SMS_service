@@ -2,7 +2,7 @@
 
 
 void startServer(){
-	int sockfd, newsock , client;
+	int sockfd, *newsock , client, c;
 	struct sockaddr_in serv_addr, cli_addr;//estrutura para guardar os edereços de ip do servidor e cliente
 
 	// iniciar socket
@@ -26,7 +26,7 @@ void startServer(){
     listen(sockfd , 3); //espera por ligação o numero e o maximo de ligaçoes
 
     puts("A espera de ligação");
-    c = sizeof(struct sockaddr_in);
+    c = sizeof(struct sockaddr_in); 
     while( (client = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t*)&c)) )      {
           puts("Conecção aceite");
            
@@ -133,5 +133,9 @@ void *connection_handler(void *socket_desc)
     free(socket_desc);
      
     return 0;
+}
+
+void newsms(void *socket_desc){
+
 }
 
