@@ -40,6 +40,7 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 }
 
 int UserNumber(){ //vai abrir a base de dados e ver quantos utilizadores existem
+	DBcreator();
 	FILE *fx; 
 	char s[60];
 	int l=0;//contador das linhas
@@ -79,7 +80,7 @@ void DBreader(utilizador Dados[]){ //leitura de base de dados
 }
 
 int findUser(char login[]){ //na base de dados procura se existe um utilizador com o login inserido
-    int user_code=-1;
+    int user_code=-1,i;
     for (i = 0; i < UserNumber(); ++i)
    		{
    			if (strncmp(login,Dados[i].login)==0)
