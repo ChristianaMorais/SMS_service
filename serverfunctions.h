@@ -1,5 +1,6 @@
 //serverfunctions
 
+void *connection_handler(void *); //enunciado das funções
 
 void startServer(){
 	int sockfd, *newsock , client, c;
@@ -45,7 +46,7 @@ void startServer(){
           puts("Handler assigned");
       }
        
-      if (client_sock < 0)
+      if (client < 0)
       {
           perror("accept failed");
           exit(1);
@@ -73,14 +74,14 @@ void *connection_handler(void *socket_desc)
    		}
    		else
    		{
-   			message = "Falhou o login tente de novo.\n"
+   			message = "Falhou o login tente de novo.\n";
    			write(sock , message , strlen(message));
    			++n;
    		}
    	}
 
    	if (n>=4){
-   	    message = "Atingiu o número máximo de logins permitidos.\n A sua ligação será desliga!\n"
+   	    message = "Atingiu o número máximo de logins permitidos.\n A sua ligação será desliga!\n";
    		write(sock , message , strlen(message));
    		close(sock);
    	}
@@ -88,7 +89,7 @@ void *connection_handler(void *socket_desc)
    	n=1;
 
    	 while(n!=0 && n < 4){ //verificação de passwoard
-   	 	message = "Password: "
+   	 	message = "Password: ";
    	 	write(sock , message , strlen(message));
    	 	recv(sock , login , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
    	 	if (strncmp(login,Dados[user_code].password)==0)
@@ -98,13 +99,13 @@ void *connection_handler(void *socket_desc)
 
    	 if (n>=4)//cortar a ligação ainda naos ei comos e faz
    	{
-   	    message = "Atingiu o número máximo de logins permitidos.\n A sua ligação será desliga!\n"
+   	    message = "Atingiu o número máximo de logins permitidos.\n A sua ligação será desliga!\n";
    		write(sock , message , strlen(message));
    		close(sock);
    		
    	}
 
-   	message = "Bem vindo, "
+   	message = "Bem vindo, ";
    	write(sock , message , strlen(message));
    	write(sock , Dados[user_code].login , strlen(Dados[user_code].login));
    	message = "\n";
