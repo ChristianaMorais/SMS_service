@@ -92,7 +92,7 @@ void *connection_handler(void *socket_desc)
    	 	message = "Password: ";
    	 	write(sock , message , strlen(message));
    	 	recv(sock , login , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
-   	 	if (strncmp(login,Dados[user_code].password)==0)
+   	 	if (strcmp(login,Dados[user_code].password)==0)
    			break;
    		++n;
    	 }
