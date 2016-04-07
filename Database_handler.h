@@ -79,11 +79,11 @@ void DBreader(utilizador Dados[]){ //leitura de base de dados
 	fclose(fx);
 }
 
-int findUser(char login[]){ //na base de dados procura se existe um utilizador com o login inserido
+int findUser(char login[],utilizador Dados[]){ //na base de dados procura se existe um utilizador com o login inserido
     int user_code=-1,i;
     for (i = 0; i < UserNumber(); ++i)
    		{
-   			if (strncmp(login,Dados[i].login)==0)
+   			if (strcmp(login,Dados[i].login)==0)
    			{
    				user_code=i;
    				break;
