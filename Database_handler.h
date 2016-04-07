@@ -6,6 +6,7 @@
 typedef struct { //definição do novo tipo utilizador
 	char login[30];
 	char password[30];
+	int sock; //usar *(int*) para guaradar
 } utilizador;
 
 void DBcreator(){
@@ -72,8 +73,9 @@ void DBreader(utilizador Dados[]){ //leitura de base de dados
 			++j;
 		}
 		Dados[n].password[i]='\0';
-		printf("%s\n",Dados[n].login );
-		printf("%s\n",Dados[n].password );
+		Dados[n].sock=-1;
+		//printf("%s\n",Dados[n].login );
+		//printf("%s\n",Dados[n].password );
 		++n;
 	}
 	fclose(fx);
