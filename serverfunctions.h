@@ -117,7 +117,7 @@ void *connection_handler(void *socket_desc)
    	while(n!=2){
    		write(sock , menu , strlen(menu));
    		recv(sock , n , 1 , 0);
-   		newsms(*socket_desc);
+   		//newsms(*socket_desc);
      /////////////////////////////////////////////////////////////////////////////////////////////////
    	}
     if(read_size == 0)
@@ -136,7 +136,7 @@ void *connection_handler(void *socket_desc)
     return 0;
 }
 
-void newsms(void *socket_desc){
+/*void newsms(void *socket_desc){
 
-}
+}*/
 
