@@ -63,7 +63,8 @@ int main(int argc, char const *argv[])
 			{
 				perror("O conexão falhou.");
 				exit(1);
-			}
+			}else
+			puts("conexão efetuada com sucesso. A fazer login");
 			i=-1; //incicar estado
 			//inicar login
 			do{
@@ -73,6 +74,7 @@ int main(int argc, char const *argv[])
 				}
 				write(sock, user , strlen(user),0);
 				recv(sock, message,1, 0);//ver o maximo d eparammetros existemtes
+				printf("%s\n",message );
 				cmd=message[0];
 				i=commandrcv(cmd);
 			}while(i!=1 && i!=2);
