@@ -1,6 +1,6 @@
 
 int commandrcv(char message){
-	if (isdigit(message[0])==0)
+	if (isdigit(message)==0)
 	{
 		perror("falhou a comunicação");
 		exit(1);
