@@ -8,7 +8,8 @@ int main(int argc, char *argv[]){
   		addUser(argv[2]);
   }
   else{
-    utilizador Dados[UserNumber()];
+    DBreader();
+    startServer();
 
 
   }
