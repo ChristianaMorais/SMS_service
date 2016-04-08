@@ -1,18 +1,47 @@
 #include "header.h"
-
+#include "ctype.h"
 int main(int argc, char const *argv[])
 {
-	if (argc!=1)
+	if (argc==2)
 	{
-		if (/* condition */)
-		{
+		
 			int sock;
 			struct sockaddr_in server;
-			char *message;
+			char *message;user[30];
 			char ipserver[10];//pode falhar por causa da terminar da strting
-			int port, i;
+			int port=0, i;
+			//incialização
+			char *testvar = strdup(argv[0]);
 
-			//incio da socket
+			for (i = 0; i <= 28 && testvar[i] != '@'; ++i)//separa o user
+			{
+				user[i]=testvar[i];
+			}
+			user[i]='\0';
+
+			//ip handle
+
+			for (++i; testvar[i] != ':'; ++i)//separa o user
+			{
+				ipserver[i]=testvar[i];
+			}
+			ipserver[i]='\0';
+
+			//porta
+
+			for (++i; testvar[i] != '\n'; ++i)
+			{
+				if (isdigit(testvar[i])==0)
+				{
+					perror("Porta inválida.");
+					exit(1);
+				}
+				port=port*10+(testvar[i]-'0');
+
+			}
+
+
+			//incio da socket//atençao ao tmanho do user
 			sock=socket(AF_INET, SOCK_STREAM, 0);
 			if (sock==-1)
 						{
@@ -66,7 +95,7 @@ int main(int argc, char const *argv[])
 			}
 
 			while(i!=-1){
-
+				printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
 
 			}
 			
@@ -77,6 +106,7 @@ int main(int argc, char const *argv[])
 			perror("Sintaxe não reconhecida.")
 			exit(1);
 		}
+
 	}
 	else{
 		perror("Chamada do cliente sem argumentos!");
