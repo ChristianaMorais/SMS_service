@@ -7,7 +7,7 @@ int main(int argc, char const *argv[])
 		/* code */
 	}
 	else{
-		perror("Chamada do cliente sem argumentos!")
+		perror("Chamada do cliente sem argumentos!");
 		exit(1);
 	}
 	return 0;
