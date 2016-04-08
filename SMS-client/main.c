@@ -11,7 +11,7 @@ int main(int argc, char const *argv[])
 		struct sockaddr_in server;
 		char *message,user[30];
 			char ipserver[10];//pode falhar por causa da terminar da strting
-			int port=0, i=0;
+			int port=0, i=0,n=0;
 			char cmd;
 			//incialização
 			//char *testvar = strdup(argv[0]);
@@ -19,18 +19,19 @@ int main(int argc, char const *argv[])
 			for (i = 0; argv[1][i] != '@'; ++i)//separa o user
 			{
 				user[i]=argv[1][i];
-				printf("%c",user[i] );
+				//printf("%c",user[i] );
 			}
 			user[i]='\0';
 
 			//ip handle
-
+			
 			for (++i; argv[1][i] != ':'; ++i)//separa o user
 			{
-				ipserver[i]=argv[1][i];
+				ipserver[n]=argv[1][i];
+				++n;
 			}
-			ipserver[i]='\0';
-			printf("%s %n\n",ipserver,port );
+			ipserver[n]='\0';
+			//printf("%s %d\n",ipserver,port ); //debug
 			//porta
 
 			for (++i; argv[1][i] != '\0'; ++i)
@@ -44,7 +45,7 @@ int main(int argc, char const *argv[])
 				port=port*10+(argv[1][i]-'0');
 
 			}
-			printf("%s %n\n",ipserver,port );
+			//printf("%s %d\n",ipserver,port );
 			//incio da socket//atençao ao tmanho do user
 			sock=socket(AF_INET, SOCK_STREAM, 0);
 			if (sock==-1)
