@@ -1,15 +1,17 @@
 #include "header.h"
 #include "ctype.h"
+#include <stdlib.h>
 int main(int argc, char const *argv[])
 {
 	if (argc==2)
 	{
 		
-			int sock;
-			struct sockaddr_in server;
-			char *message;user[30];
+		int sock;
+		struct sockaddr_in server;
+		char *message,user[30];
 			char ipserver[10];//pode falhar por causa da terminar da strting
 			int port=0, i;
+			char cmd;
 			//incialização
 			char *testvar = strdup(argv[0]);
 
@@ -44,10 +46,10 @@ int main(int argc, char const *argv[])
 			//incio da socket//atençao ao tmanho do user
 			sock=socket(AF_INET, SOCK_STREAM, 0);
 			if (sock==-1)
-						{
-							perror("A criação da socket falhou.")
-							exit(1);
-						}
+			{
+				perror("A criação da socket falhou.");
+				exit(1);
+			}
 			//atribuir caracteristicas ao servidor 
 			server.sin_addr.s_addr = inet_addr(ipserver);
 			server.sin_family = AF_INET;
@@ -56,8 +58,8 @@ int main(int argc, char const *argv[])
 			//ligação ao servidor
 			if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
 			{
-			       perror("O conexão falhou.");
-			       exit(1);
+				perror("O conexão falhou.");
+				exit(1);
 			}
 			i=-1; //incicar estado
 			//inicar login
@@ -68,7 +70,8 @@ int main(int argc, char const *argv[])
 				}
 				write(sock, user , strlen(user),0);
 				recv(sock, message,1, 0);//ver o maximo d eparammetros existemtes
-				i=commandrcv(message);
+				cmd=message[0];
+				i=commandrcv(cmd);
 			}while(i!=1 && i!=2);
 
 			if (i==1)
@@ -85,7 +88,7 @@ int main(int argc, char const *argv[])
 				scanf("%s \n", message);
 				write(sock, message , strlen(message),0);
 				recv(sock, message,1, 0);//ver o maximo d eparammetros existemtes
-				i=commandrcv(message[0]);
+				i=commandrcv(cmd);
 			}while(i!=1 && i!=2);
 
 			if (i==1)
@@ -100,12 +103,12 @@ int main(int argc, char const *argv[])
 			}
 			
 			close(sock);
-		}
+	/*	}
 		else
 		{
-			perror("Sintaxe não reconhecida.")
+			perror("Sintaxe não reconhecida.");
 			exit(1);
-		}
+		}*/
 
 	}
 	else{
@@ -113,4 +116,4 @@ int main(int argc, char const *argv[])
 		exit(1);
 	}
 	return 0;
-}
+} 
