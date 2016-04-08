@@ -6,7 +6,10 @@
 #include "arpa/inet.h"
 #include "string.h"
 #include "ctype.h"
+#include "unistd.h"    //write
+#include "pthread.h" //ao executar no final colocar a bibioleta -lpthread
 
 //Funções a adicionar
-#include "serverfunctions.h"
 #include "Database_handler.h"
+#include "serverfunctions.h"
+
