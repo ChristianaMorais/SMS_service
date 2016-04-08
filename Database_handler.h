@@ -14,7 +14,35 @@ void DBcreator(){
     fclose(fp);
 }
 
+int UserNumber(){ //vai abrir a base de dados e ver quantos utilizadores existem
+	DBcreator();
+	FILE *fx; 
+	char s[60];
+	int l=0;//contador das linhas
+	fx=fopen(FX,"r");
+
+	while (fgets (s, 60, fx)!=NULL){
+		++l;
+	}
+	fclose(fx);
+	//puts(l);
+	if (l==0)
+	{
+		return 1;
+		perror("A sua base de dados, encontra-se vazia, se ainda nao utilizou a função adduser e aconcelhavel que o faça.");
+	}
+	return l;
+}
+
+utilizador Dados[30]; //temporariamente os dados tem um limite
+
 void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
+	if (UserNumber()>30)
+	{
+		perror("Base de dados cheia.");
+		exit(1);
+	}
+
 	if (strlen(arg)>29){//medida de segurança
 		perror("Nome de utilizador com carateres a mais!");
 	}
@@ -40,22 +68,7 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 	}
 }
 
-int UserNumber(){ //vai abrir a base de dados e ver quantos utilizadores existem
-	DBcreator();
-	FILE *fx; 
-	char s[60];
-	int l=0;//contador das linhas
-	fx=fopen(FX,"r");
-
-	while (fgets (s, 60, fx)!=NULL){
-		++l;
-	}
-	fclose(fx);
-	//puts(l);
-	return l;
-}
-
-void DBreader(utilizador Dados[]){ //leitura de base de dados
+void DBreader(){ //leitura de base de dados
 	FILE *fx; 
 	char s[60];
 	int n=0,i=0,j=0;
@@ -75,23 +88,28 @@ void DBreader(utilizador Dados[]){ //leitura de base de dados
 		Dados[n].password[i]='\0';
 		Dados[n].sock=-1;
 		//printf("%s\n",Dados[n].login );
-		//printf("%s\n",Dados[n].password );
+		//printf("%s %d\n",Dados[n].password,UserNumber() );
 		++n;
 	}
 	fclose(fx);
 }
 
-int findUser(char login[],utilizador Dados[]){ //na base de dados procura se existe um utilizador com o login inserido
-    int user_code=-1,i;
-    for (i = 0; i < UserNumber(); ++i)
-   		{
-   			if (strcmp(login,Dados[i].login)==0)
-   			{
-   				user_code=i;
-   				break;
-   			}
-   		}
-   	return user_code;
-    
+int findUser(char login[]){ //na base de dados procura se existe um utilizador com o login inserido
+	int i;
+	//printf("%s ff\n",login );
+	for (i = 0; i < UserNumber(); ++i)	{
+		if (strcmp(login,Dados[i].login)==0)	{
+			//printf("%s\n",Dados[i].login);
+			return i;
+		}
+	}
+	return -1;
+
+}
+
+void formatter(char login[]){
+	int i;
+	for (i = 0; i < 29 && isalnum(login[i])!=0; ++i);		
+		login[i]='\0';
 }
 
