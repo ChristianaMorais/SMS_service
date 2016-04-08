@@ -1,3 +1,5 @@
+#pragma once //para compilação de bibliotecas ser unica
+
 #include "stdio.h"
 #include "stdlib.h"
 #include "sys/socket.h"
