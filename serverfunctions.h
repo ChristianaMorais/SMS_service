@@ -17,7 +17,7 @@ void startServer(){
    //Definir parametros de serv_addr
    serv_addr.sin_family = AF_INET;
    serv_addr.sin_addr.s_addr = INADDR_ANY; //definição de ip 
-   serv_addr.sin_port = htons( 2525 );//defenição de porta 
+   serv_addr.sin_port = htons( 2524 );//defenição de porta 
 
    //juntar tudo
     if( bind(sockfd,(struct sockaddr *)&serv_addr , sizeof(serv_addr)) < 0){
@@ -65,6 +65,7 @@ void *connection_handler(void *socket_desc)
     //Send some messages to the client
     while(n!=0 && n < 4){ //verificação de login
     	recv(sock , login , 30 , 0);
+      formatter(login);
    		user_code=findUser(login);
    		if (user_code!=-1)
    		{
@@ -81,7 +82,10 @@ void *connection_handler(void *socket_desc)
    	if (n>=4){
    	    message = "Atingiu o número máximo de logins permitidos.\n A sua ligação será desliga!\n";
    		write(sock , message , strlen(message));
-   		close(sock);
+      puts("ligação desligada, atingiu o numero máximo de logins permitidos");
+      close(sock);
+      free(socket_desc);
+       return 0;
    	}
 
    	n=1;
@@ -89,8 +93,10 @@ void *connection_handler(void *socket_desc)
    	 while(n!=0 && n < 4){ //verificação de passwoard
    	 	message = "Password: ";
    	 	write(sock , message , strlen(message));
-   	 	recv(sock , login , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
-   	 	if (strcmp(login,Dados[user_code].password)==0)
+      recv(sock , login , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
+   	  formatter(login);
+      printf("%sff%sff%d\n",login,Dados[user_code].password,strcmp(login,Dados[user_code].password) );
+      if (strcmp(login,Dados[user_code].password)==0)
    			break;
    		++n;
    	 }
@@ -99,7 +105,10 @@ void *connection_handler(void *socket_desc)
    	{
    	    message = "Atingiu o número máximo de logins permitidos.\n A sua ligação será desliga!\n";
    		write(sock , message , strlen(message));
-   		close(sock);
+      puts("ligação desligada, atingiu o numero máximo de passwords permetidas");
+   		free(socket_desc);
+      close(sock);
+      return 0;
    		
    	}
 
@@ -109,7 +118,7 @@ void *connection_handler(void *socket_desc)
    	message = "\n";
    	write(sock , message , strlen(message));
 
-   	char menu = "1 - Para uma nova mensagem \n2 - Para sair do programa\n";
+   	char *menu = "1 - Para uma nova mensagem \n2 - Para sair do programa\n";
    	
 
    	while(n!=2){
