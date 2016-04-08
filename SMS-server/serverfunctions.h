@@ -70,17 +70,19 @@ void *connection_handler(void *socket_desc)
    		if (user_code!=-1)
    		{
    			n=0;
+        message = "2";//codigo para dizer que o login foi aceite
+        write(sock , message , strlen(message));
    		}
    		else
    		{
-   			message = "Falhou o login tente de novo.\n";
+   			message = "0";
    			write(sock , message , strlen(message));
    			++n;
    		}
    	}
 
    	if (n>=4){
-   	    message = "Atingiu o número máximo de logins permitidos.\n A sua ligação será desliga!\n";
+   	    message = "1";
    		write(sock , message , strlen(message));
       puts("ligação desligada, atingiu o numero máximo de logins permitidos");
       close(sock);
@@ -91,19 +93,19 @@ void *connection_handler(void *socket_desc)
    	n=1;
 
    	 while(n!=0 && n < 4){ //verificação de passwoard
-   	 	message = "Password: ";
-   	 	write(sock , message , strlen(message));
-      recv(sock , login , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
+   	  recv(sock , login , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
    	  formatter(login);
-      printf("%sff%sff%d\n",login,Dados[user_code].password,strcmp(login,Dados[user_code].password) );
+      //printf("%sff%sff%d\n",login,Dados[user_code].password,strcmp(login,Dados[user_code].password) );
       if (strcmp(login,Dados[user_code].password)==0)
    			break;
+      message = "0";
+      write(sock , message , strlen(message));
    		++n;
    	 }
 
    	 if (n>=4)//cortar a ligação ainda naos ei comos e faz
    	{
-   	    message = "Atingiu o número máximo de logins permitidos.\n A sua ligação será desliga!\n";
+   	  message = "1";
    		write(sock , message , strlen(message));
       puts("ligação desligada, atingiu o numero máximo de passwords permetidas");
    		free(socket_desc);
@@ -111,8 +113,9 @@ void *connection_handler(void *socket_desc)
       return 0;
    		
    	}
-
-   	message = "Bem vindo, ";
+    message = "2";
+    write(sock , message , strlen(message));
+    message = "Bem vindo, ";
    	write(sock , message , strlen(message));
    	write(sock , Dados[user_code].login , strlen(Dados[user_code].login));
    	message = "\n";
