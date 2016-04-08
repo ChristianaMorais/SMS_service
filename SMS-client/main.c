@@ -65,10 +65,11 @@ int main(int argc, char const *argv[])
 				exit(1);
 			}
 
-			while(1){
+			while(i!=-1){
 
 
 			}
+			
 			close(sock);
 		}
 		else
