@@ -60,13 +60,11 @@ void *connection_handler(void *socket_desc)
     int sock = *(int*)socket_desc, i,n=1;
     int read_size;
     int user_code=-1;
-    char *message , client_message[2000];
+    char *message , client_message[2000], *menuact;
     char login[30];
     //Send some messages to the client
     while(n!=0 && n < 4){ //verificação de login
-    	//message = "Efetue login: "; o cliente usa diretamente nos argumentos da aplicação o seu utilizador
-    	//write(sock , message , strlen(message));
-   		recv(sock , login , 30 , 0);
+    	recv(sock , login , 30 , 0);
    		user_code=findUser(login);
    		if (user_code!=-1)
    		{
@@ -112,13 +110,12 @@ void *connection_handler(void *socket_desc)
    	write(sock , message , strlen(message));
 
    	char menu = "1 - Para uma nova mensagem \n2 - Para sair do programa\n";
-   	n=0;
+   	
 
    	while(n!=2){
    		write(sock , menu , strlen(menu));
-   		recv(sock , n , 1 , 0);
-   		//newsms(*socket_desc);
-     /////////////////////////////////////////////////////////////////////////////////////////////////
+   		recv(sock ,menuact , 1 , 0);
+   		
    	}
     if(read_size == 0)
     {
