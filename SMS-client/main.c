@@ -1,6 +1,7 @@
 #include "header.h"
 #include "ctype.h"
 #include <stdlib.h>
+
 int main(int argc, char const *argv[])
 {
 	if (argc==2)
@@ -10,39 +11,40 @@ int main(int argc, char const *argv[])
 		struct sockaddr_in server;
 		char *message,user[30];
 			char ipserver[10];//pode falhar por causa da terminar da strting
-			int port=0, i;
+			int port=0, i=0;
 			char cmd;
 			//incialização
-			char *testvar = strdup(argv[0]);
-
-			for (i = 0; i <= 28 && testvar[i] != '@'; ++i)//separa o user
+			//char *testvar = strdup(argv[0]);
+			//printf("%s %c\n",argv[1],argv[1][i] );
+			for (i = 0; argv[1][i] != '@'; ++i)//separa o user
 			{
-				user[i]=testvar[i];
+				user[i]=argv[1][i];
+				printf("%c",user[i] );
 			}
 			user[i]='\0';
 
 			//ip handle
 
-			for (++i; testvar[i] != ':'; ++i)//separa o user
+			for (++i; argv[1][i] != ':'; ++i)//separa o user
 			{
-				ipserver[i]=testvar[i];
+				ipserver[i]=argv[1][i];
 			}
 			ipserver[i]='\0';
-
+			printf("%s %n\n",ipserver,port );
 			//porta
 
-			for (++i; testvar[i] != '\n'; ++i)
+			for (++i; argv[1][i] != '\0'; ++i)
 			{
-				if (isdigit(testvar[i])==0)
+				if (isdigit(argv[1][i])==0)
 				{
+					//printf("%c %d \n",argv[1][i],i );
 					perror("Porta inválida.");
 					exit(1);
 				}
-				port=port*10+(testvar[i]-'0');
+				port=port*10+(argv[1][i]-'0');
 
 			}
-
-
+			printf("%s %n\n",ipserver,port );
 			//incio da socket//atençao ao tmanho do user
 			sock=socket(AF_INET, SOCK_STREAM, 0);
 			if (sock==-1)
@@ -51,9 +53,9 @@ int main(int argc, char const *argv[])
 				exit(1);
 			}
 			//atribuir caracteristicas ao servidor 
-			server.sin_addr.s_addr = inet_addr(ipserver);
+			server.sin_addr.s_addr = inet_addr( "192.168.1.95");//
 			server.sin_family = AF_INET;
-			server.sin_port = htons( port );
+			server.sin_port = htons( 2524 );//port
 
 			//ligação ao servidor
 			if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
@@ -110,10 +112,10 @@ int main(int argc, char const *argv[])
 			exit(1);
 		}*/
 
-	}
-	else{
-		perror("Chamada do cliente sem argumentos!");
-		exit(1);
-	}
-	return 0;
-} 
+		}
+		else{
+			perror("Chamada do cliente sem argumentos!");
+			exit(1);
+		}
+		return 0;
+	} 
