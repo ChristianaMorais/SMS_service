@@ -62,7 +62,7 @@ void *connection_handler(void *socket_desc)
   int read_size;
   int user_code=-1;
   char *message , client_message[2000], *menuact;
-  char login[30];
+  char login[30],pass[30];
     //Send some messages to the client
     while(n!=0 && n < 4){ //verificação de login
     	message="1";
@@ -96,12 +96,12 @@ void *connection_handler(void *socket_desc)
     n=1;
 
    	 while(n!=0 && n < 4){ //verificação de passwoard
-   	  recv(sock , login , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
-   	  formatter(login);
-      if (strcmp(login,Dados[user_code].password)==0)
+   	  recv(sock , pass , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
+   	  formatter(pass);
+      //puts(login);
+      if (strcmp(pass,Dados[user_code].password)==0)
         break;
       message = "0";
-      puts(message);
       write(sock , message , strlen(message));
       ++n;
     }
@@ -117,6 +117,7 @@ void *connection_handler(void *socket_desc)
 
     }
     message = "2";
+    write(sock , message , strlen(message));
     socketSaver(user_code, sock);
     printf("O utilizador %s encontra-se online.\n",Dados[user_code].login );
 
