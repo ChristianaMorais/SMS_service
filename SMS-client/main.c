@@ -101,8 +101,9 @@ int main(int argc, char const *argv[])
 				printf("Passwoard: ");
 				scanf("%s", message);
 				write(sock, message , strlen(message));
+				puts("espera da ligação");
 				recv(sock, message,30, 0);//ver o maximo d eparammetros existemtes
-				
+				printf("%s codigo \n",message);
 				i=commandrcv(message[0]);
 			}while(i!=1 && i!=2);
 
@@ -111,7 +112,7 @@ int main(int argc, char const *argv[])
 				perror("Atingiu o limite de tentativas para passwoard.");
 				exit(1);
 			}
-
+			//puts("entrada");
 			while(1){
 				printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
 				scanf("%d",&i);
