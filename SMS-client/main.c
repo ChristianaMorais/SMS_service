@@ -114,7 +114,7 @@ int main(int argc, char const *argv[])
 
 			while(i!=-1){
 				printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
-				scanf(%d,&i);
+				scanf("%d",&i);
 			}
 			//}
 			close(sock);
