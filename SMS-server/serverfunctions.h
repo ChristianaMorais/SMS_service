@@ -64,13 +64,20 @@ void *connection_handler(void *socket_desc)
     char login[30];
     //Send some messages to the client
     while(n!=0 && n < 4){ //verificação de login
-    	recv(sock , login , 30 , 0);
+    	//puts("entrou no loop");
+      message="1";
+      write(sock , message , strlen(message));
+     // puts("enviado 1");
+      recv(sock , login , 30 , 0);
+     // printf("%s login recebido\n",login);
       formatter(login);
+      //printf("%s formatter \n",login);
    		user_code=findUser(login);
    		if (user_code!=-1)
    		{
    			n=0;
         message = "2";//codigo para dizer que o login foi aceite
+//printf("%s \n", message);
         write(sock , message , strlen(message));
    		}
    		else
@@ -95,10 +102,11 @@ void *connection_handler(void *socket_desc)
    	 while(n!=0 && n < 4){ //verificação de passwoard
    	  recv(sock , login , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
    	  formatter(login);
-      //printf("%sff%sff%d\n",login,Dados[user_code].password,strcmp(login,Dados[user_code].password) );
+      //printf("%s pass recebida a comparar com %s \n", login, Dados[user_code].password );
       if (strcmp(login,Dados[user_code].password)==0)
    			break;
       message = "0";
+      puts(message);
       write(sock , message , strlen(message));
    		++n;
    	 }
@@ -114,21 +122,23 @@ void *connection_handler(void *socket_desc)
    		
    	}
     message = "2";
-    write(sock , message , strlen(message));
+    printf("O utilizador %s encontra-se online.\n",Dados[user_code].login );
+    /*write(sock , message , strlen(message));
     message = "Bem vindo, ";
    	write(sock , message , strlen(message));
    	write(sock , Dados[user_code].login , strlen(Dados[user_code].login));
    	message = "\n";
-   	write(sock , message , strlen(message));
+   	write(sock , message , strlen(message));*/
 
-   	char *menu = "1 - Para uma nova mensagem \n2 - Para sair do programa\n";
    	
 
    	while(n!=2){
-   		write(sock , menu , strlen(menu));
+   		
    		recv(sock ,menuact , 1 , 0);
+
    		
    	}
+
     if(read_size == 0)
     {
         puts("Client disconnected");
