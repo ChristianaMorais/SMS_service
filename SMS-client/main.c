@@ -78,7 +78,7 @@ int main(int argc, char const *argv[])
 					scanf("%s",user);
 				}
 				//puts(user);
-				write(sock, user , strlen(user),0);
+				write(sock, user , strlen(user));
 				//puts(user);
 				//printf("%s login enviado \n",user );
 				recv(sock, message,30, 0);//ver o maximo d eparammetros existemtes
@@ -100,7 +100,7 @@ int main(int argc, char const *argv[])
 				puts("Falhou a passwoard. Tente de novo.");
 				printf("Passwoard: ");
 				scanf("%s", message);
-				write(sock, message , strlen(message),0);
+				write(sock, message , strlen(message));
 				recv(sock, message,30, 0);//ver o maximo d eparammetros existemtes
 				
 				i=commandrcv(message[0]);
@@ -112,10 +112,36 @@ int main(int argc, char const *argv[])
 				exit(1);
 			}
 
-			while(i!=-1){
+			while(1){
 				printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
 				scanf("%d",&i);
+				switch(i){
+					case 1: //listar online
+						write(sock,"1",1);
+						recv(sock,message,1024,1);
+						puts(message);
+						break;
+					case 2://enviar sms
+						write(sock,"2",1);
+						i=SMScreater(sock);
+						if (i==0)
+							puts("Mensagem enviada com sucesso.");
+						else
+							puts("Mensagem não enviada.");
+						break;
+					case 3: //terminar programa
+						write(sock,"9",1);
+						puts("Log out efetuado.");
+						close(sock);
+						return 0;
+						break;
+					default:
+						puts("Opção inválida.");
+				}
+
+				SMSreceaver(sock);
 			}
+
 			//}
 			close(sock);
 	/*	}
