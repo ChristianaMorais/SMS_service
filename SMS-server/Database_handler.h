@@ -65,15 +65,16 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 				++n;
 				s=getchar();
 			}
-
+			pass1[n]='\0';
 			n=0;
+			printf("Reintroduza a password: ");
 			s=getchar();
-
 			while (s!='\n'&&n<29){
 				pass2[n]=s;
 				++n;
 				s=getchar();
 			}
+			pass2[n]='\0';
 		}while(strcmp(pass1,pass2)!=0);
 		strcat(arg,";");
 		strcat(arg,pass1);
