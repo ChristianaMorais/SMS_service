@@ -123,9 +123,33 @@ int findUser(char login[]){ //na base de dados procura se existe um utilizador c
 
 }
 
+void socketSaver(int code, int socket){
+	Dados[code].sock=socket;
+}
+
 void formatter(char login[]){
 	int i;
 	for (i = 0; i < 29 && isalnum(login[i])!=0; ++i);		
 		login[i]='\0';
 }
 
+void onlineusers(int sock){
+	char *message;
+	strcat(message,"Urilizadores online:\n");
+	int i, flag=0;
+	for (i = 0; i < UserNumber(); ++i)	{
+		if (Dados[i].sock!=-1)	{
+			strcat(message,Dados[i].login);
+			strcat(message,"\n");
+			flag=1;
+		}
+	}
+	strcat(message,"\0");
+	if (flag==1)
+		write(sock,message,strlen(message));
+	else
+	{
+		message="Não se encontram utilizadores online.\n";
+		write(sock,message,strlen(message));
+	}
+}
