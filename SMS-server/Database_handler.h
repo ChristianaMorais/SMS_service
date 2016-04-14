@@ -49,18 +49,34 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 	else{
 		FILE *fx; 
 		char s;
-		char pass[29];
+		char pass1[29], pass2[29];
 		int n=0;
 		fx=fopen(FX,"a");
-		printf("Password: ");
-		s=getchar();
-		while (s!='\n'&&n<29){
-			pass[n]=s;
-			++n;
+		do{
+			if (n!=0)
+			{
+				n=0;
+				printf("As passwod's não correspondem volte a inserir.\n");
+			}
+			printf("Password: ");
 			s=getchar();
-		}
+			while (s!='\n'&&n<29){
+				pass1[n]=s;
+				++n;
+				s=getchar();
+			}
+
+			n=0;
+			s=getchar();
+
+			while (s!='\n'&&n<29){
+				pass2[n]=s;
+				++n;
+				s=getchar();
+			}
+		}while(strcmp(pass1,pass2)!=0);
 		strcat(arg,";");
-		strcat(arg,pass);
+		strcat(arg,pass1);
 		strcat(arg,";\n");
 	//printf("%s\n",arg);
 		fputs(arg,fx);
