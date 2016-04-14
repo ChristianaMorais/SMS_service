@@ -1,7 +1,8 @@
 #include "header.h"
 #include "ctype.h"
 #include <stdlib.h>
-
+char user[30];
+char message[1024];
 int main(int argc, char const *argv[])
 {
 	if (argc==2)
@@ -9,7 +10,7 @@ int main(int argc, char const *argv[])
 		
 		int sock;
 		struct sockaddr_in server;
-		char *message,user[30];
+		
 			char ipserver[10];//pode falhar por causa da terminar da strting
 			int port=0, i=0,n=0;
 			char cmd;
@@ -22,7 +23,6 @@ int main(int argc, char const *argv[])
 				//printf("%c",user[i] );
 			}
 			user[i]='\0';
-
 			//ip handle
 			
 			for (++i; argv[1][i] != ':'; ++i)//separa o user
@@ -54,9 +54,9 @@ int main(int argc, char const *argv[])
 				exit(1);
 			}
 			//atribuir caracteristicas ao servidor 
-			server.sin_addr.s_addr = inet_addr( "192.168.1.95");//
+			server.sin_addr.s_addr = inet_addr( ipserver );//
 			server.sin_family = AF_INET;
-			server.sin_port = htons( 2524 );//port
+			server.sin_port = htons( port );//port
 
 			//ligação ao servidor
 			if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
@@ -65,18 +65,27 @@ int main(int argc, char const *argv[])
 				exit(1);
 			}else
 			puts("conexão efetuada com sucesso. A fazer login");
+			
 			i=-1; //incicar estado
 			//inicar login
+			//while(1){
+			//puts(user);
+			recv(sock, message,30, 0);
+			printf("%s codigo recebido\n",message );
 			do{
 				if (i!=-1){
 					puts("Falhou o login. Tente de novo.");
-					scanf("%s\n",user);
+					scanf("%s",user);
 				}
+				//puts(user);
 				write(sock, user , strlen(user),0);
-				recv(sock, message,1, 0);//ver o maximo d eparammetros existemtes
-				printf("%s\n",message );
-				cmd=message[0];
-				i=commandrcv(cmd);
+				//puts(user);
+				//printf("%s login enviado \n",user );
+				recv(sock, message,30, 0);//ver o maximo d eparammetros existemtes
+				//printf("%s\n",message );
+
+				//cmd=message[0];
+				i=commandrcv(message[0]);
 			}while(i!=1 && i!=2);
 
 			if (i==1)
@@ -88,12 +97,13 @@ int main(int argc, char const *argv[])
 			i=-1;
 			do{
 				if (i!=-1)
-					puts("Falhou a passwoard. Tente de novo.");
+				puts("Falhou a passwoard. Tente de novo.");
 				printf("Passwoard: ");
-				scanf("%s \n", message);
+				scanf("%s", message);
 				write(sock, message , strlen(message),0);
-				recv(sock, message,1, 0);//ver o maximo d eparammetros existemtes
-				i=commandrcv(cmd);
+				recv(sock, message,30, 0);//ver o maximo d eparammetros existemtes
+				
+				i=commandrcv(message[0]);
 			}while(i!=1 && i!=2);
 
 			if (i==1)
@@ -104,9 +114,9 @@ int main(int argc, char const *argv[])
 
 			while(i!=-1){
 				printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
-
+				scanf(%d,&i);
 			}
-			
+			//}
 			close(sock);
 	/*	}
 		else
