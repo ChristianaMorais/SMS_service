@@ -135,8 +135,7 @@ void formatter(char login[]){
 }
 
 void onlineusers(int sock){
-	char *message;
-	strcat(message,"Urilizadores online:\n");
+	char message[500]="Urilizadores online:\n";
 	int i, flag=0;
 	for (i = 0; i < UserNumber(); ++i)	{
 		if (Dados[i].sock!=-1)	{
@@ -150,7 +149,7 @@ void onlineusers(int sock){
 		write(sock,message,strlen(message));
 	else
 	{
-		message="Não se encontram utilizadores online.\n";
-		write(sock,message,strlen(message));
+		char message1="Não se encontram utilizadores online.\n";
+		write(sock,message1,strlen(message1));
 	}
 }
