@@ -120,7 +120,7 @@ int main(int argc, char const *argv[])
 			}
 			//puts("entrada");
 			//criação da thread
-			/*pthread_t sniffer_thread;
+			pthread_t sniffer_thread;
 			newsock = malloc(4);
           	*newsock = sock;
                    
@@ -128,7 +128,7 @@ int main(int argc, char const *argv[])
           {
               perror("could not create thread");
               exit(1);
-          }*/
+          }
 
 			while(1){
 				printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
@@ -137,23 +137,25 @@ int main(int argc, char const *argv[])
 				switch(i){
 					case 1: //listar online
 						write(sock,"1",1);
-						recv(sock,message,1024,0);
-						puts(message);
-						puts("mensagem posta");
+						waitFor(1);
+						//recv(sock,message,1024,0);
+						//puts(message);
+						//puts("mensagem posta");
 						break;
 					case 2://enviar sms
 						write(sock,"2",1);
 						i=SMScreater(sock);
-						if (i==0)
+						/*if (i==0)
 							puts("Mensagem enviada com sucesso.");
 						else
-							puts("Mensagem não enviada.");
+							puts("Mensagem não enviada.");*/
 						break;
 					case 3: //terminar programa
 						write(sock,"9",1);
-						puts("Log out efetuado.");
-						close(sock);
-						return 0;
+						waitFor(1);
+						//puts("Log out efetuado.");
+						//close(sock);
+						//return 0;
 						break;
 					default:
 						puts("Opção inválida.");
@@ -165,7 +167,7 @@ int main(int argc, char const *argv[])
 			//}
 			bzero(message, sizeof(message));
 			recv(sock,message,1024,0);
-			waitFor(1);
+			
 			close(sock);
 	/*	}
 		else

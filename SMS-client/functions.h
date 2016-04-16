@@ -33,27 +33,50 @@ void *SMSreceaver(void *socket_desc){
 	char messagel[600]; 
 	char corpo[500];
 	char user[30];
-	int i, n=0;
+	int i, n=0,s;
 	while(1){
 	bzero(messagel,sizeof(messagel));
-	//printf("%s entrou no sms receaver\n",messagel);
+	//puts("a espera de se ligar");
 	recv(sock,messagel,600,0);
-	for (i = 0; messagel[i]!=';'; ++i)
-	{
-		user[i]=messagel[i];
-	}
+	//printf("%s entrou no sms receaver\n",messagel);
+	s=messagel[(strlen(messagel)-1)]-'0';
 
-	user[i]='\0';
+	//puts(messagel[(strlen(messagel)-1)]);
+	switch(s){
+		case 1:
+			messagel[(strlen(messagel)-1)]='\0';
+			printf("%s",messagel);
+			break;
+		case 2:
+			puts("Mensagem enviada com sucesso.");
+			break;
+		case 8:
+			messagel[(strlen(messagel)-1)]='\0';//retirar o carater de controlo
+			for (i = 0; messagel[i]!=';'; ++i)
+			{
+				user[i]=messagel[i];
+			}
 
-	for (++i; messagel[i]!='\0'; ++i)
-	{
-		corpo[n]=messagel[i];
-		++n;
+			user[i]='\0';
+
+			for (++i; messagel[i]!='\0'; ++i)
+			{
+				corpo[n]=messagel[i];
+				++n;
+			}
+			corpo[n]='\0';
+			n=0;
+			printf("%s: ",user );
+			printf("%s\n",corpo );
+			break;
+		case 9:
+			puts("Log out efetuado");
+			close(sock);
+			exit(0);
+		default:
+			puts("Insucesso!");
+
 	}
-	corpo[n]='\0';
-	n=0;
-	printf("%s: ",user );
-	printf("%s\n",corpo );
 	}
 }
 
