@@ -1,18 +1,21 @@
 #include "header.h"
 #include "ctype.h"
 #include <stdlib.h>
+#include <pthread.h>
+#include "time.h"
 char user[30];
 char message[1024];
 int main(int argc, char const *argv[])
 {
 	if (argc==2)
 	{
+		//bzero(message, sizeof(message));
 		
 		int sock;
 		struct sockaddr_in server;
 		
 			char ipserver[10];//pode falhar por causa da terminar da strting
-			int port=0, i=0,n=0;
+			int port=0, i=0,n=0,*newsock;
 			char cmd;
 			//incialização
 			//char *testvar = strdup(argv[0]);
@@ -70,13 +73,14 @@ int main(int argc, char const *argv[])
 			//inicar login
 			//while(1){
 			//puts(user);
-			recv(sock, message,30, 0);
-			printf("%s codigo recebido\n",message );
+			recv(sock, message,1024, 0);
+			//printf("%s codigo recebido\n",message );
 			do{
 				if (i!=-1){
 					puts("Falhou o login. Tente de novo.");
 					scanf("%s",user);
 				}
+				bzero(message, sizeof(message));
 				//puts(user);
 				write(sock, user , strlen(user));
 				//puts(user);
@@ -96,31 +100,46 @@ int main(int argc, char const *argv[])
 			//iniciar passwoard
 			i=-1;
 			do{
+				bzero(message, sizeof(message));
 				if (i!=-1)
 				puts("Falhou a passwoard. Tente de novo.");
 				printf("Passwoard: ");
 				scanf("%s", message);
 				write(sock, message , strlen(message));
 				puts("espera da ligação");
-				recv(sock, message,30, 0);//ver o maximo d eparammetros existemtes
+				bzero(message, sizeof(message));
+				recv(sock, message,1024, 0);//ver o maximo d eparammetros existemtes
 				printf("%s codigo \n",message);
 				i=commandrcv(message[0]);
 			}while(i!=1 && i!=2);
-
+			fflush(stdout);
 			if (i==1)
 			{
 				perror("Atingiu o limite de tentativas para passwoard.");
 				exit(1);
 			}
 			//puts("entrada");
+			//criação da thread
+			/*pthread_t sniffer_thread;
+			newsock = malloc(4);
+          	*newsock = sock;
+                   
+          if( pthread_create( &sniffer_thread , NULL ,  SMSreceaver ,(void*) sock) < 0)
+          {
+              perror("could not create thread");
+              exit(1);
+          }*/
+
 			while(1){
 				printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
 				scanf("%d",&i);
+				bzero(message, sizeof(message));
 				switch(i){
 					case 1: //listar online
 						write(sock,"1",1);
-						recv(sock,message,1024,1);
+						recv(sock,message,1024,0);
 						puts(message);
+						puts("mensagem posta");
 						break;
 					case 2://enviar sms
 						write(sock,"2",1);
@@ -140,10 +159,13 @@ int main(int argc, char const *argv[])
 						puts("Opção inválida.");
 				}
 
-				SMSreceaver(sock);
+				//SMSreceaver(sock);
 			}
 
 			//}
+			bzero(message, sizeof(message));
+			recv(sock,message,1024,0);
+			waitFor(1);
 			close(sock);
 	/*	}
 		else
