@@ -61,11 +61,12 @@ void *connection_handler(void *socket_desc)
   int sock = *(int*)socket_desc, i,n=1;
   int read_size;
   int user_code=-1;
-  char *message , client_message[2000], *menuact;
+  char message[1000] , client_message[2000], menuact[3];
   char login[30],pass[30];
     //Send some messages to the client
     while(n!=0 && n < 4){ //verificação de login
-    	message="1";
+    	message[0]='\0';
+      strcat(message,"1");
       write(sock , message , strlen(message));
       recv(sock , login , 30 , 0);
       formatter(login);
@@ -73,19 +74,22 @@ void *connection_handler(void *socket_desc)
       if (user_code!=-1)
       {
         n=0;
-        message = "2";//codigo para dizer que o login foi aceite
+        message[0]='\0';
+        strcat(message,"2");//codigo para dizer que o login foi aceite
         write(sock , message , strlen(message));
       }
       else
       {
-        message = "0";
+        message[0]='\0';
+        strcat(message,"0");
         write(sock , message , strlen(message));
         ++n;
       }
     }
 
     if (n>=4){
-      message = "1";
+      message[0]='\0';
+      strcat(message,"1");
       write(sock , message , strlen(message));
       puts("ligação desligada, atingiu o numero máximo de logins permitidos");
       close(sock);
@@ -101,14 +105,16 @@ void *connection_handler(void *socket_desc)
       //puts(login);
       if (strcmp(pass,Dados[user_code].password)==0)
         break;
-      message = "0";
+      message[0]='\0';
+      strcat(message,"0");
       write(sock , message , strlen(message));
       ++n;
     }
 
    	 if (n>=4)//cortar a ligação ainda naos ei comos e faz
      {
-      message = "1";
+      message[0]='\0';
+        strcat(message,"1");
       write(sock , message , strlen(message));
       puts("ligação desligada, atingiu o numero máximo de passwords permetidas");
       free(socket_desc);
@@ -116,15 +122,17 @@ void *connection_handler(void *socket_desc)
       return 0;
 
     }
-    message = "2";
+    message[0]='\0';
+    strcat(message,"2");
+     printf("%s\n",message );
     write(sock , message , strlen(message));
     socketSaver(user_code, sock);
     printf("O utilizador %s encontra-se online.\n",Dados[user_code].login );
 
     while(n!=9){
 
-   		recv(sock ,menuact , 1 , 0);//fazer verificação de digitos
-
+   		recv(sock ,menuact , 3 , 0);//fazer verificação de digitos
+      printf("%s\n",menuact );
       n=menuact[0]-'0';
       switch(n){
         case 1:
@@ -155,13 +163,15 @@ void *connection_handler(void *socket_desc)
 
     //Free the socket pointer
     socketSaver(user_code, -1);
+    message[0]='\0';
+    strcat(message,"9");
     free(socket_desc);
-
+    write(sock , message , strlen(message));
     return 0;
   }
 
 void smssender(int user_code,int socksender){
-  char argumentos[600],user[30],corpo[500],; //user e aquele que queremos enviar
+  char argumentos[600],user[30],corpo[500]; //user e aquele que queremos enviar
   int n=0, i=0, userSend;
   recv(socksender,argumentos,1024,0);
   for (i = 0; argumentos[i] != ';'; ++i) //isola o utilizador de quem veio
