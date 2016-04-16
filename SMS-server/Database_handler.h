@@ -144,14 +144,15 @@ void onlineusers(int sock){
 			flag=1;
 		}
 	}
+	strcat(message,"1");
 	strcat(message,"\0");
 	if (flag==1){
 		printf("mensagem %s \n",message );
 		write(sock,message,strlen(message));
 	}
-	else
+	else //se ninguem esta online comoe stas a a pedir
 	{
-		char message1[]="Não se encontram utilizadores online.\n";
+		char message1[]="Não se encontram utilizadores online.1\n";
 		write(sock,message1,strlen(message1));
 	}
 }

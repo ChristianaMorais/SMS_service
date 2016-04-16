@@ -144,6 +144,8 @@ void *connection_handler(void *socket_desc)
         case 3:
         	printf("%s ficou offline.\n",Dados[user_code].login );
        		 break;
+        case 9:
+          break;
         default:
         	perror("erro ana comunicação");
         	exit(1);
@@ -198,6 +200,7 @@ void smssender(int user_code,int socksender){
     strcat(argumentos,Dados[user_code].login);
     strcat(argumentos,";");
     strcat(argumentos,corpo);
+    strcat(argumentos,"8");
     strcat(argumentos,"\0");
     write(Dados[userSend].sock,argumentos,strlen(argumentos));
   }
@@ -206,6 +209,6 @@ void smssender(int user_code,int socksender){
     write(socksender,"-1",30); //temporario em breve crirar o serviço de sms offline
     return;
   }
-  write(socksender,"0",30);
+  write(socksender,"2",30);
 }
 
