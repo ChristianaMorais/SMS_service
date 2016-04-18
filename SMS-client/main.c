@@ -104,6 +104,7 @@ int main(int argc, char const *argv[])
 				if (i!=-1)
 				puts("Falhou a passwoard. Tente de novo.");
 				printf("Passwoard: ");
+				//system("");
 				scanf("%s", message);
 				write(sock, message , strlen(message));
 				puts("espera da ligação");
@@ -144,11 +145,7 @@ int main(int argc, char const *argv[])
 						break;
 					case 2://enviar sms
 						write(sock,"2",1);
-						i=SMScreater(sock);
-						/*if (i==0)
-							puts("Mensagem enviada com sucesso.");
-						else
-							puts("Mensagem não enviada.");*/
+						SMScreater(sock);
 						break;
 					case 3: //terminar programa
 						write(sock,"9",1);

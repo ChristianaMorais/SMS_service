@@ -12,7 +12,7 @@ void mainprinter(){
 	printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
 }
 
-int SMScreater(int sock){
+void SMScreater(int sock){
 	char corpo[500];
 	char user[30],messagel[600];
 	printf("Para: ");
@@ -26,9 +26,9 @@ int SMScreater(int sock){
 	strcat(messagel, corpo);
 	strcat(messagel,"\0");
 	write(sock,messagel,strlen(messagel));
-	bzero(messagel,sizeof(messagel));
-	recv(sock,messagel,600,0);
-	return (messagel[0]-0);//confirmar se e digito
+	//bzero(messagel,sizeof(messagel));
+	//recv(sock,messagel,600,0);
+	//return (messagel[0]-0);//confirmar se e digito
 }
 
 void *SMSreceaver(void *socket_desc){
@@ -52,7 +52,7 @@ void *SMSreceaver(void *socket_desc){
 			printf("%s",messagel);
 			mainprinter();
 			break;
-		case 2:
+		case 2: //estado do envio da mensagem
 			puts("Mensagem enviada com sucesso.");
 			mainprinter();
 			break;
@@ -61,7 +61,7 @@ void *SMSreceaver(void *socket_desc){
 			messagel[(strlen(messagel)-1)]='\0';
 			printf("%s",messagel);
 			break;
-		case 8:
+		case 8: //recepção de mensagem normal
 			messagel[(strlen(messagel)-1)]='\0';//retirar o carater de controlo
 			for (i = 0; messagel[i]!=';'; ++i)
 			{
@@ -85,6 +85,7 @@ void *SMSreceaver(void *socket_desc){
 			puts("Log out efetuado");
 			close(sock);
 			exit(0);
+		//case -1: fazer o erro
 		default:
 			puts("Insucesso!");
 

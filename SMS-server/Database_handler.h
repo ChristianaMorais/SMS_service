@@ -163,7 +163,7 @@ void onlineusers(int sock){
 }*/
 
 void offlineSMS(int user,int userSend,char corpo[]){ //guarda a sms num ficheiro
-	FILE *fp = fopen(FO, "ab+");
+	FILE *fp = fopen(FO, "a");
 	char message1[1000];
 	char str[15];
 	sprintf(str, "%d", userSend);
@@ -174,13 +174,13 @@ void offlineSMS(int user,int userSend,char corpo[]){ //guarda a sms num ficheiro
 	strcat(message1,str);
 	strcat(message1,";");
 	strcat(message1,corpo);
-	strcat(message1,";");
+	strcat(message1,";\n");
 	fputs(message1,fp);//destinatario;remetente;mesnagem;
 	fclose(fp);
 }
 
 void offlineRECEIVER(int sock,int codeuser){
-	FILE *fp = fopen(FO, "r");
+	FILE *fp = fopen(FO, "a+");
 	char message1[1000];
 	char arg[1000];
 	int code=0,n=0,i=0;
@@ -199,7 +199,7 @@ void offlineRECEIVER(int sock,int codeuser){
 				arg[n]=message1[i];
 				++n;
 			}
-			strcat(arg,"\n1\0");
+			strcat(arg,"\n3\0");
 			write(sock,arg,strlen(arg));	
 		}
 		code=0;
