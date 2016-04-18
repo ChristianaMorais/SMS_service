@@ -175,6 +175,7 @@ void *connection_handler(void *socket_desc)
 void smssender(int user_code,int socksender){
   char argumentos[600],user[30],corpo[500]; //user e aquele que queremos enviar
   int n=0, i=0, userSend;
+  bzero(argumentos,strsize(argumentos));
   recv(socksender,argumentos,1024,0);
   for (i = 0; argumentos[i] != ';'; ++i) //isola o utilizador de quem veio
     user[i]=argumentos[i];
@@ -194,7 +195,8 @@ void smssender(int user_code,int socksender){
   }
   corpo[n]='\0';
   //escolha do metodo de envio
-  argumentos[0]='\0'; //reenicia a string 
+  //argumentos[0]='\0'; //reenicia a string 
+  bzero(argumentos,strsize(argumentos));
   if (Dados[userSend].sock!=-1)//online
   {
     strcat(argumentos,Dados[user_code].login);
