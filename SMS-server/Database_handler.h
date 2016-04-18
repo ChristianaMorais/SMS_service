@@ -189,10 +189,9 @@ void offlineRECEIVER(int sock,int codeuser){
 			code=code*10+(message1[i]-'0');
 		if (codeuser==code)
 		{
-			for ( ; message1[i]!=';'; ++i){
-				arg[n]=message1[i];
-				++n;
-			}
+			for ( ; message1[i]!=';'; ++i)
+				code=code*10+(message1[i]-'0');
+			strcat(arg,Dados[code].login);
 			strcat(arg," enviou: ");
 			n=strlen(arg);
 			for ( ; message1[i]!=';'; ++i){
