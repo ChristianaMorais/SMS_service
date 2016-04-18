@@ -127,7 +127,7 @@ void *connection_handler(void *socket_desc)
     write(sock , message , strlen(message));
     socketSaver(user_code, sock);
     printf("O utilizador %s encontra-se online.\n",Dados[user_code].login );
-    offlineSENDER(sock);
+    offlineRECEIVER(sock,user_code);
     while(n!=9){
 
    		recv(sock ,menuact , 3 , 0);//fazer verificação de digitos
@@ -174,7 +174,7 @@ void *connection_handler(void *socket_desc)
 void smssender(int user_code,int socksender){
   char argumentos[600],user[30],corpo[500]; //user e aquele que queremos enviar
   int n=0, i=0, userSend;
-  bzero(argumentos,strsize(argumentos));
+  bzero(argumentos,sizeof(argumentos));
   recv(socksender,argumentos,1024,0);
   for (i = 0; argumentos[i] != ';'; ++i) //isola o utilizador de quem veio
     user[i]=argumentos[i];
@@ -195,7 +195,7 @@ void smssender(int user_code,int socksender){
   corpo[n]='\0';
   //escolha do metodo de envio
   //argumentos[0]='\0'; //reenicia a string 
-  bzero(argumentos,strsize(argumentos));
+  bzero(argumentos,sizeof(argumentos));
   if (Dados[userSend].sock!=-1)//online
   {
     strcat(argumentos,Dados[user_code].login);

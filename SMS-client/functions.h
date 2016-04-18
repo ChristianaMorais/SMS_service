@@ -56,6 +56,11 @@ void *SMSreceaver(void *socket_desc){
 			puts("Mensagem enviada com sucesso.");
 			mainprinter();
 			break;
+		case 3:
+			puts("Mensagem Offline");
+			messagel[(strlen(messagel)-1)]='\0';
+			printf("%s",messagel);
+			break;
 		case 8:
 			messagel[(strlen(messagel)-1)]='\0';//retirar o carater de controlo
 			for (i = 0; messagel[i]!=';'; ++i)

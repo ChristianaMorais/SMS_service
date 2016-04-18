@@ -158,50 +158,51 @@ void onlineusers(int sock){
 	}
 }
 
-void offlineSMS(int user,int userSend,char corpo[]){
+/*int numberChar(int numero){
+	return (floor (log10 (abs (number))) + 1);
+}*/
+
+void offlineSMS(int user,int userSend,char corpo[]){ //guarda a sms num ficheiro
 	FILE *fp = fopen(FO, "ab+");
 	char message1[1000];
-	char number;
-	itoa(number,userSend,1);
+	char str[15];
+	sprintf(str, "%d", userSend);
 	bzero(message1,sizeof(message1));
-	strcat(message1,number);
+	strcat(message1,str);
 	strcat(message1,";");
-	itoa(number,user,1);
-	strcat(message1,number);
+	sprintf(str, "%d", user);
+	strcat(message1,str);
 	strcat(message1,";");
 	strcat(message1,corpo);
 	strcat(message1,";");
-	fputs(message1,fp);
+	fputs(message1,fp);//destinatario;remetente;mesnagem;
 	fclose(fp);
 }
 
-void offlineSENDER(int sock,int codeuser){
+void offlineRECEIVER(int sock,int codeuser){
 	FILE *fp = fopen(FO, "r");
 	char message1[1000];
 	char arg[1000];
-	int code=0,n=0,i;
+	int code=0,n=0,i=0;
 	while(fgets(message1,1000,fp)){
 		for (i = 0; message1[i]!=';' ; ++i)
-			code=code*10+message1[i];
+			code=code*10+(message1[i]-'0');
 		if (codeuser==code)
 		{
-			arg[0]="1";
-			n=1
-			for (; message1[i]!=';'; ++i){
-				arg[n]=message1;
+			for ( ; message1[i]!=';'; ++i){
+				arg[n]=message1[i];
 				++n;
 			}
 			strcat(arg," enviou: ");
 			n=strlen(arg);
-			for (; message1[i]!=';' ++i)
-			{
-				arg[n]=message1;
+			for ( ; message1[i]!=';'; ++i){
+				arg[n]=message1[i];
 				++n;
 			}
-			strcat(arg,"\n\0");
+			strcat(arg,"\n1\0");
 			write(sock,arg,strlen(arg));	
 		}
 		code=0;
-		}
+	}
 	fclose(fp);
 }
