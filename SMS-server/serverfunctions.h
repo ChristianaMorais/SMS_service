@@ -120,15 +120,14 @@ void *connection_handler(void *socket_desc)
       free(socket_desc);
       close(sock);
       return 0;
-
     }
     message[0]='\0';
     strcat(message,"2");
-     printf("%s\n",message );
+    printf("%s\n",message );
     write(sock , message , strlen(message));
     socketSaver(user_code, sock);
     printf("O utilizador %s encontra-se online.\n",Dados[user_code].login );
-
+    offlineSENDER(sock);
     while(n!=9){
 
    		recv(sock ,menuact , 3 , 0);//fazer verificação de digitos
@@ -208,8 +207,8 @@ void smssender(int user_code,int socksender){
   }
   else
   {
-    write(socksender,"-1",30); //temporario em breve crirar o serviço de sms offline
-    return;
+    offlineSMS(user_code,userSend,corpo); //temporario em breve crirar o serviço de sms offline
+    //return;
   }
   write(socksender,"2",30);
 }

@@ -2,6 +2,7 @@
 //#include <stdio.h>
 
 #define FX "BaseDados"
+#define FO "offlinemessages"
 
 typedef struct { //definição do novo tipo utilizador
 	char login[30];
@@ -155,4 +156,52 @@ void onlineusers(int sock){
 		char message1[]="Não se encontram utilizadores online.1\n";
 		write(sock,message1,strlen(message1));
 	}
+}
+
+void offlineSMS(int user,int userSend,char corpo[]){
+	FILE *fp = fopen(FO, "ab+");
+	char message1[1000];
+	char number;
+	itoa(number,userSend,1);
+	bzero(message1,sizeof(message1));
+	strcat(message1,number);
+	strcat(message1,";");
+	itoa(number,user,1);
+	strcat(message1,number);
+	strcat(message1,";");
+	strcat(message1,corpo);
+	strcat(message1,";");
+	fputs(message1,fp);
+	fclose(fp);
+}
+
+void offlineSENDER(int sock,int codeuser){
+	FILE *fp = fopen(FO, "r");
+	char message1[1000];
+	char arg[1000];
+	int code=0,n=0,i;
+	while(fgets(message1,1000,fp)){
+		for (i = 0; message1[i]!=';' ; ++i)
+			code=code*10+message1[i];
+		if (codeuser==code)
+		{
+			arg[0]="1";
+			n=1
+			for (; message1[i]!=';'; ++i){
+				arg[n]=message1;
+				++n;
+			}
+			strcat(arg," enviou: ");
+			n=strlen(arg);
+			for (; message1[i]!=';' ++i)
+			{
+				arg[n]=message1;
+				++n;
+			}
+			strcat(arg,"\n\0");
+			write(sock,arg,strlen(arg));	
+		}
+		code=0;
+		}
+	fclose(fp);
 }
