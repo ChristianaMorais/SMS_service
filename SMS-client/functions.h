@@ -1,4 +1,5 @@
 #include "time.h"
+//#define KMAG  "\x1B[35m"
 int commandrcv(char messagel){
 	if (isdigit(messagel)==0)
 	{
@@ -6,6 +7,9 @@ int commandrcv(char messagel){
 		exit(1);
 	}
 	return (messagel-'0');
+}
+void mainprinter(){
+	printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
 }
 
 int SMScreater(int sock){
@@ -46,9 +50,11 @@ void *SMSreceaver(void *socket_desc){
 		case 1:
 			messagel[(strlen(messagel)-1)]='\0';
 			printf("%s",messagel);
+			mainprinter();
 			break;
 		case 2:
 			puts("Mensagem enviada com sucesso.");
+			mainprinter();
 			break;
 		case 8:
 			messagel[(strlen(messagel)-1)]='\0';//retirar o carater de controlo
@@ -68,6 +74,7 @@ void *SMSreceaver(void *socket_desc){
 			n=0;
 			printf("%s: ",user );
 			printf("%s\n",corpo );
+			mainprinter();
 			break;
 		case 9:
 			puts("Log out efetuado");

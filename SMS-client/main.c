@@ -129,15 +129,15 @@ int main(int argc, char const *argv[])
               perror("could not create thread");
               exit(1);
           }
-
+          	mainprinter();
 			while(1){
-				printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
+				//printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
 				scanf("%d",&i);
 				bzero(message, sizeof(message));
 				switch(i){
 					case 1: //listar online
 						write(sock,"1",1);
-						waitFor(1);
+						//waitFor(1);
 						//recv(sock,message,1024,0);
 						//puts(message);
 						//puts("mensagem posta");
