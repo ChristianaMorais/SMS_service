@@ -1,7 +1,7 @@
 //serverfunctions
 
 void *connection_handler(void *); //enunciado das funções
-void smssender (int user_code,int socksender);
+int smssender (int user_code,int socksender);
 
 void startServer(){
 	int sockfd, *newsock , client, c;
@@ -58,87 +58,95 @@ void startServer(){
 void *connection_handler(void *socket_desc)
 {
     //Get the socket descriptor
-  int sock = *(int*)socket_desc, i,n=1;
+  int sock = *(int*)socket_desc, i,n=0;
   int read_size;
   int user_code=-1;
   char message[1000] , client_message[2000], menuact[3];
   char login[30],pass[30];
-    //Send some messages to the client
-    while(n!=0 && n < 4){ //verificação de login
-    	message[0]='\0';
-      strcat(message,"1");
-      write(sock , message , strlen(message));
+
+    strcat(message,"1");
+    write(sock , message , strlen(message));//o envio desta tem como objetivo sincronizar os dois servidores permitindo que as comunicações nao falhem
+
+    /*Autenticação do nome do utilizador*/
+    while(n!=0 ){ //verificação de utilizador
+    	bzero(message, sizeof(message));
       recv(sock , login , 30 , 0);
       formatter(login);
-      user_code=findUser(login);
+      user_code=findUser(login); //compara o nome dado com a base de dados
+      ++n;
       if (user_code!=-1)
       {
         n=0;
-        message[0]='\0';
+        bzero(message, sizeof(message));
         strcat(message,"2");//codigo para dizer que o login foi aceite
         write(sock , message , strlen(message));
       }
-      else
-      {
-        message[0]='\0';
-        strcat(message,"0");
-        write(sock , message , strlen(message));
-        ++n;
+      else{
+       if (n==3){
+          bzero(message, sizeof(message));
+          strcat(message,"1"); //envio de codigo para desligar a ligação
+          write(sock , message , strlen(message));
+          puts("Ligação desligada, login sem sucesso.");
+          close(sock);
+          free(socket_desc);
+          return 0;
+        }
+        else
+        {
+          bzero(message, sizeof(message));
+          strcat(message,"0"); //codigo para continuar o ciclo
+          write(sock , message , strlen(message));          
+        }
       }
     }
 
-    if (n>=4){
-      message[0]='\0';
-      strcat(message,"1");
-      write(sock , message , strlen(message));
-      puts("ligação desligada, atingiu o numero máximo de logins permitidos");
-      close(sock);
-      free(socket_desc);
-      return 0;
-    }
+   n=1;
 
-    n=1;
-
-   	 while(n!=0 && n < 4){ //verificação de passwoard
-   	  recv(sock , pass , 30 , 0);//nao vou inciar mais nenhuma variavel a pass vai ser igual e ja tneho o codigo d eutilizador
+    /*Autenticação da passwoard*/
+   	 while(n!=0 && n <4){ 
+      bzero(pass, sizeof(pass));
+   	  recv(sock , pass , 30 , 0);
    	  formatter(pass);
-      //puts(login);
-      if (strcmp(pass,Dados[user_code].password)==0)
+      if (strcmp(pass,Dados[user_code].password)==0) //confirma se a passwoard corresponde com o utilizador
         break;
-      message[0]='\0';
-      strcat(message,"0");
-      write(sock , message , strlen(message));
-      ++n;
+       ++n;
+
+       if (n==4)//significa que exedeu  as tentativas permitidas
+       {
+        bzero(message, sizeof(message));
+        strcat(message,"1");
+        write(sock , message , strlen(message));
+        puts("Ligação desligada, login sem sucesso.");
+      //close(sock);
+        free(socket_desc);
+        return 0;
+      }
+      else
+      {
+        bzero(message, sizeof(message));
+        strcat(message,"0");//indica que nao acertou e que o ciclo vai continuar
+        write(sock , message , strlen(message));
+      }
     }
 
-   	 if (n>=4)//cortar a ligação ainda naos ei comos e faz
-     {
-      message[0]='\0';
-        strcat(message,"1");
-      write(sock , message , strlen(message));
-      puts("ligação desligada, atingiu o numero máximo de passwords permetidas");
-      free(socket_desc);
-      close(sock);
-      return 0;
-    }
-    message[0]='\0';
+   	
+    bzero(message, sizeof(message));
     strcat(message,"2");
-    printf("%s\n",message );
-    write(sock , message , strlen(message));
+    //printf("%s\n",message );
+    write(sock , message , strlen(message)); //envia o codigo que a passoward foi aceite
     socketSaver(user_code, sock);
     printf("O utilizador %s encontra-se online.\n",Dados[user_code].login );
     offlineRECEIVER(sock,user_code);
     while(n!=9){
-
+      bzero(menuact, sizeof(menuact));
    		recv(sock ,menuact , 3 , 0);//fazer verificação de digitos
-      printf("%s\n",menuact );
       n=menuact[0]-'0';
       switch(n){
         case 1:
         	onlineusers(sock);
         	break;
         case 2:
-        	smssender(user_code,sock);
+        	i=smssender(user_code,sock);
         	break;
         case 3:
         	printf("%s ficou offline.\n",Dados[user_code].login );
@@ -146,24 +154,16 @@ void *connection_handler(void *socket_desc)
         case 9:
           break;
         default:
-        	perror("erro ana comunicação");
-        	exit(1);
+        	perror("Erro na comunicação.");
+        	break; // assim so vai desligar esta socket
       }
 
     }
 
-    if(read_size == 0)
-    {
-      puts("Client disconnected");
-      fflush(stdout);
-    }
-    else if(read_size == -1)
-    {
-      perror("recv failed");
-    }
-
     //Free the socket pointer
+
     socketSaver(user_code, -1);
+    printf("%s ficou offline.\n",Dados[user_code].login );
     message[0]='\0';
     strcat(message,"9");
     free(socket_desc);
@@ -171,7 +171,7 @@ void *connection_handler(void *socket_desc)
     return 0;
   }
 
-void smssender(int user_code,int socksender){
+int smssender(int user_code,int socksender){
   char argumentos[600],user[30],corpo[500]; //user e aquele que queremos enviar
   int n=0, i=0, userSend;
   bzero(argumentos,sizeof(argumentos));
@@ -184,7 +184,7 @@ void smssender(int user_code,int socksender){
   if (userSend==-1)//verifica se existe o utilizador
   {
     write(socksender,"-1",30);//pode dar erro
-    return;
+    return 1;
   }
 
   //isolar a mensagem em si
@@ -207,9 +207,10 @@ void smssender(int user_code,int socksender){
   }
   else
   {
-    offlineSMS(user_code,userSend,corpo); //temporario em breve crirar o serviço de sms offline
+    offlineSMS(user_code,userSend,corpo); //temporario em breve criar o serviço de sms offline
     //return;
   }
   write(socksender,"2",30);
+  return 0;
 }
 
