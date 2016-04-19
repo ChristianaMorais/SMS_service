@@ -3,7 +3,7 @@
 int commandrcv(char messagel){
 	if (isdigit(messagel)==0)
 	{
-		perror("falhou a comunicação");
+		perror("A comunicação falhou.");
 		exit(1);
 	}
 	return (messagel-'0');
@@ -26,9 +26,6 @@ void SMScreater(int sock){
 	strcat(messagel, corpo);
 	strcat(messagel,"\0");
 	write(sock,messagel,strlen(messagel));
-	//bzero(messagel,sizeof(messagel));
-	//recv(sock,messagel,600,0);
-	//return (messagel[0]-0);//confirmar se e digito
 }
 
 void *SMSreceaver(void *socket_desc){

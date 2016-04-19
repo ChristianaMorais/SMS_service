@@ -64,32 +64,22 @@ int main(int argc, char const *argv[])
 			//ligação ao servidor
 			if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
 			{
-				perror("O conexão falhou.");
+				perror("A conexão falhou.");
 				exit(1);
 			}else
-			puts("conexão efetuada com sucesso. A fazer login");
+			puts(" A conexão ao servidor foi efetuada com sucesso.");
 			
 			i=-1; //incicar estado
-			//inicar login
-			//while(1){
-			//puts(user);
-			recv(sock, message,1024, 0);
-			//printf("%s codigo recebido\n",message );
+			recv(sock, message,sizeof(message), 0); //recebe a mensagem de controlo do servidor, dando origem a correspondecia de user
 			do{
 				if (i!=-1){
 					puts("Falhou o login. Tente de novo.");
 					scanf("%s",user);
 				}
 				bzero(message, sizeof(message));
-				//puts(user);
 				write(sock, user , strlen(user));
-				//puts(user);
-				//printf("%s login enviado \n",user );
-				recv(sock, message,30, 0);//ver o maximo d eparammetros existemtes
-				//printf("%s\n",message );
-
-				//cmd=message[0];
-				i=commandrcv(message[0]);
+				recv(sock, message,sizeof(message), 0);//ver o maximo d eparammetros existemtes
+				i=commandrcv(message[0]); //vai traduzir a string para int
 			}while(i!=1 && i!=2);
 
 			if (i==1)
@@ -97,26 +87,27 @@ int main(int argc, char const *argv[])
 				perror("Atingiu o limite de logins.");
 				exit(1);
 			}
-			//iniciar passwoard
+			/*Metodo para as passwoard's */
 			i=-1;
 			do{
 				bzero(message, sizeof(message));
 				if (i!=-1)
-				puts("Falhou a passwoard. Tente de novo.");
-				printf("Passwoard: ");
-				//system("");
+					puts("Falhou a passwoard. Tente de novo.");
+
+				printf("Passwoard: "); //falta desligar o echo da password
+				
 				scanf("%s", message);
 				write(sock, message , strlen(message));
-				puts("espera da ligação");
 				bzero(message, sizeof(message));
-				recv(sock, message,1024, 0);//ver o maximo d eparammetros existemtes
-				printf("%s codigo \n",message);
+				recv(sock, message,sizeof(message), 0);//ver o maximo d eparammetros existemtes
+				//printf("%s codigo \n",message);
 				i=commandrcv(message[0]);
 			}while(i!=1 && i!=2);
+
 			fflush(stdout);
 			if (i==1)
 			{
-				perror("Atingiu o limite de tentativas para passwoard.");
+				perror("Atingiu o limite de tentativas para a passwoard.");
 				exit(1);
 			}
 			//puts("entrada");
@@ -138,10 +129,6 @@ int main(int argc, char const *argv[])
 				switch(i){
 					case 1: //listar online
 						write(sock,"1",1);
-						//waitFor(1);
-						//recv(sock,message,1024,0);
-						//puts(message);
-						//puts("mensagem posta");
 						break;
 					case 2://enviar sms
 						write(sock,"2",1);
@@ -149,30 +136,11 @@ int main(int argc, char const *argv[])
 						break;
 					case 3: //terminar programa
 						write(sock,"9",1);
-						waitFor(1);
-						//puts("Log out efetuado.");
-						//close(sock);
-						//return 0;
 						break;
 					default:
 						puts("Opção inválida.");
 				}
-
-				//SMSreceaver(sock);
 			}
-
-			//}
-			bzero(message, sizeof(message));
-			recv(sock,message,1024,0);
-			
-			close(sock);
-	/*	}
-		else
-		{
-			perror("Sintaxe não reconhecida.");
-			exit(1);
-		}*/
-
 		}
 		else{
 			perror("Chamada do cliente sem argumentos!");
