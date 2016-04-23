@@ -69,6 +69,14 @@ void *SMSreceaver(void *socket_desc){
 			printf("%s",messagel);
 			printf("\n");
 			break;
+		case 4: 
+			puts("Enviado sem sucesso.");
+			break;
+		case 7:
+			printf("!!!!! Servidor informou que irá terminar o serviço de SMS !!!!!\nLogout forçado.\n");
+			close(sock);
+			exit(0);
+			break;
 		case 8: //recepção de mensagem normal
 			messagel[(strlen(messagel)-1)]='\0';//retirar o carater de controlo
 			for (i = 0; messagel[i]!=';'; ++i)
@@ -95,9 +103,7 @@ void *SMSreceaver(void *socket_desc){
 			close(sock);
 			exit(0);
 			break;
-		case 4: 
-			puts("Enviado sem sucesso.");
-			break;
+		
 		default:
 			puts("Insucesso na comunicação.");
 			close(sock);

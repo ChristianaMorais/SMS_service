@@ -121,7 +121,8 @@ int main(int argc, char const *argv[])
               perror("Não conseguiu criar a thread");
               exit(1);
           }
-          	mainprinter();
+          printf("Utilizador %s autenticado. Pode começar a usar o sistema!\n",user);
+          mainprinter();
 			while(1){
 				//printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
 				scanf("%d",&i);

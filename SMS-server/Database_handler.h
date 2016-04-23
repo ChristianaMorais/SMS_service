@@ -83,7 +83,7 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 		strcat(arg,";\n");
 	//printf("%s\n",arg);
 		fputs(arg,fx);
-		fclose(fx);
+		fclose(fx);		
 	}
 }
 
@@ -159,6 +159,16 @@ void onlineusers(int sock){
 	}
 }
 
+int onlineuserscounter(){
+	int count=0,i;
+	for (i = 0; i < UserNumber(); ++i)
+	{
+		if (Dados[i].sock!=-1)
+			++count;
+	}
+	return count;
+}
+
 /*int numberChar(int numero){
 	return (floor (log10 (abs (number))) + 1);
 }*/
@@ -216,3 +226,4 @@ void offlineRECEIVER(int sock,int codeuser){
 	remove(FO);
 	rename(FOC,FO);
 }
+

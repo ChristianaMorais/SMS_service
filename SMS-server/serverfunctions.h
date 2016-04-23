@@ -2,7 +2,7 @@
 
 void *connection_handler(void *); //enunciado das funções
 int smssender (int user_code,int socksender);
-
+void *serveradminpanel();
 void startServer(){
 	int sockfd, *newsock , client, c;
 	struct sockaddr_in serv_addr, cli_addr;//estrutura para guardar os edereços de ip do servidor e cliente
@@ -26,8 +26,18 @@ void startServer(){
     	exit(1);
     }
     listen(sockfd , 3); //espera por ligação o numero e o maximo de ligaçoes
+      
+      //consola de administração do servidor 
+      pthread_t menu_thread;
+      if( pthread_create( &menu_thread , NULL ,  serveradminpanel , NULL) < 0)
+          {
+              perror("could not create thread");
+              exit(1);
+          }
+
     puts("Servidor iniciado.");
     puts("A espera de ligação");
+    puts("Digite -q para desligar em segurança o servidor.");
     c = sizeof(struct sockaddr_in); 
     while( (client = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t*)&c)) )      {
                 
@@ -218,3 +228,47 @@ int smssender(int user_code,int socksender){
   return 0;
 }
 
+
+void *serveradminpanel(){
+  char op[2], user[30], decisao;
+  int i;
+  while(1){
+    scanf("%s",op);
+    __fpurge(stdin); //limpar o buffer metdo especifico para c em linux
+    if(op[0]=='-'){
+      switch(op[1]){
+        case 'q':
+          printf("!!!!!\nTem a certeza que pretende terminar o servidor?\nEstão neste momento %d utilizadores online...\nConfirme por favor (s/n) ? ", onlineuserscounter());
+          decisao=getchar();
+          if (decisao=='s')
+          {
+            puts("!!!!! A enviar mensagem de terminação a todos os utilizadores");
+            for (i = 0; i <UserNumber(); ++i)
+            {
+              if (Dados[i].sock!=-1)
+                write(Dados[i].sock,"7",2);
+            }
+            puts("!!!!! Servidor terminado !!!!!");
+            exit(0);
+          }
+        break;
+        case 'h':
+          printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -h : mostra a ajuda à consola;\n -q : desliga o servidor;\n");
+        break;
+        case 'a':
+          printf("Novo utilizador: ");
+          scanf("%s",user);
+          addUser(user);
+          DBreader();
+          printf("Utilizador %s foi adicionado.\n",user);
+        break;
+        default:
+          //printf("%c\n",op[1]);
+          printf("Opção não reconhecida.\n");
+        break;
+      }
+    }
+    else
+      puts("As opções devem começar com - ex: -h");
+  }
+}
