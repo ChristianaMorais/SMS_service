@@ -44,7 +44,7 @@ void *SMSreceaver(void *socket_desc){
 	char messagel[600]; 
 	char corpo[500];
 	char user[30];
-	int i, n=0,s;
+	int i, n=0,s, b=0;
 	while(1){
 	bzero(messagel,sizeof(messagel));
 	//puts("a espera de se ligar");
@@ -92,10 +92,17 @@ void *SMSreceaver(void *socket_desc){
 			puts("Log out efetuado");
 			close(sock);
 			exit(0);
+			break;
 		//case -1: fazer o erro
 		default:
 			puts("Insucesso!");
-
+			++b;
+			if (b>=3)
+			{
+				close(sock);
+				exit(0);
+			}
+			break;
 	}
 	}
 }
