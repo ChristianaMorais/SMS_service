@@ -26,12 +26,11 @@ void startServer(){
     	exit(1);
     }
     listen(sockfd , 3); //espera por ligação o numero e o maximo de ligaçoes
-
+    puts("Servidor iniciado.");
     puts("A espera de ligação");
     c = sizeof(struct sockaddr_in); 
     while( (client = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t*)&c)) )      {
-          puts("Conecção aceite");
-           
+                
           pthread_t sniffer_thread;
           newsock = malloc(4);
           *newsock = client;
@@ -41,10 +40,7 @@ void startServer(){
               perror("could not create thread");
               exit(1);
           }
-           
-          //Now join the thread , so that we dont terminate before the thread
-          //pthread_join( sniffer_thread , NULL);
-          puts("Handler assigned");
+                
       }
        
       if (client < 0)
@@ -134,10 +130,9 @@ void *connection_handler(void *socket_desc)
    	
     bzero(message, sizeof(message));
     strcat(message,"2");
-    //printf("%s\n",message );
     write(sock , message , strlen(message)); //envia o codigo que a passoward foi aceite
     socketSaver(user_code, sock);
-    printf("O utilizador %s encontra-se online.\n",Dados[user_code].login );
+    printf("* Utilizador %s  iniciou a sua sessão com sucesso.\n",Dados[user_code].login );
     offlineRECEIVER(sock,user_code);
     while(n!=9){
       bzero(menuact, sizeof(menuact));
@@ -149,9 +144,9 @@ void *connection_handler(void *socket_desc)
         	break;
         case 2:
         	i=smssender(user_code,sock);
-        	break;
+          break;
         case 3:
-        	printf("%s ficou offline.\n",Dados[user_code].login );
+        	printf("%s ficou offline.\n",Dados[user_code].login ); //ver que caso e e este 3
        		 break;
         case 9:
           break;
@@ -170,10 +165,8 @@ void *connection_handler(void *socket_desc)
 
     }
 
-    //Free the socket pointer
-
     socketSaver(user_code, -1);
-    printf("%s ficou offline.\n",Dados[user_code].login );
+    printf("# %s fez logout\n",Dados[user_code].login );
     message[0]='\0';
     strcat(message,"9");
     free(socket_desc);
@@ -221,6 +214,7 @@ int smssender(int user_code,int socksender){
     //return;
   }
   write(socksender,"2",30);
+  printf("-> %s mandou uma mensagem a %s\n",Dados[user_code].login, Dados[userSend].login);
   return 0;
 }
 

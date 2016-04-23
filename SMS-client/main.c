@@ -118,7 +118,7 @@ int main(int argc, char const *argv[])
                    
           if( pthread_create( &sniffer_thread , NULL ,  SMSreceaver ,(void*) sock) < 0)
           {
-              perror("could not create thread");
+              perror("Não conseguiu criar a thread");
               exit(1);
           }
           	mainprinter();

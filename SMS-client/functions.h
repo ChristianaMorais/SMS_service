@@ -9,7 +9,7 @@ int commandrcv(char messagel){
 	return (messagel-'0');
 }
 void mainprinter(){
-	printf("*****MENU******\n1)Listar os utilizadores online.\n2)Enviar nova mensagem.\n3)Log out.\n");
+	printf("**MENU**\n1)Listar utilizadores online.\n2)Mandar SMS a um utilizador.\n3)Logout.\n");
 }
 
 void SMScreater(int sock){
@@ -67,6 +67,7 @@ void *SMSreceaver(void *socket_desc){
 			puts("Mensagem Offline");
 			messagel[(strlen(messagel)-1)]='\0';
 			printf("%s",messagel);
+			printf("\n");
 			break;
 		case 8: //recepção de mensagem normal
 			messagel[(strlen(messagel)-1)]='\0';//retirar o carater de controlo
@@ -84,6 +85,7 @@ void *SMSreceaver(void *socket_desc){
 			}
 			corpo[n]='\0';
 			n=0;
+			printf("\n");
 			printf("%s: ",user );
 			printf("%s\n",corpo );
 			mainprinter();
@@ -97,19 +99,15 @@ void *SMSreceaver(void *socket_desc){
 			puts("Enviado sem sucesso.");
 			break;
 		default:
-			puts("Insucesso!");
-			++b;
-			if (b>=3)
-			{
-				close(sock);
-				exit(0);
-			}
+			puts("Insucesso na comunicação.");
+			close(sock);
+			exit(1);
 			break;
 	}
 	}
 }
 
 void waitFor (unsigned int secs) {
-    unsigned int retTime = time(0) + secs;   // Get finishing time.
-    while (time(0) < retTime);               // Loop until it arrives.
+    unsigned int retTime = time(0) + secs;   
+    while (time(0) < retTime);             
 }
