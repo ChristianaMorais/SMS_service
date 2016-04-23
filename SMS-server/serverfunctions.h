@@ -193,7 +193,7 @@ int smssender(int user_code,int socksender){
 
   if (userSend==-1)//verifica se existe o utilizador
   {
-    write(socksender,"-1",30);//pode dar erro
+    write(socksender,"4",30);//pode dar erro
     return 1;
   }
 

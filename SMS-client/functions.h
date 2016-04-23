@@ -29,7 +29,7 @@ void SMScreater(int sock){
 		c=getchar();
 	}
 	corpo[i]='\0';
-	printf("\n\n");
+	printf("\n");
 	bzero(messagel,sizeof(messagel));
 	strcat(messagel,user);
 	strcat(messagel,";");
@@ -93,7 +93,9 @@ void *SMSreceaver(void *socket_desc){
 			close(sock);
 			exit(0);
 			break;
-		//case -1: fazer o erro
+		case 4: 
+			puts("Enviado sem sucesso.");
+			break;
 		default:
 			puts("Insucesso!");
 			++b;
