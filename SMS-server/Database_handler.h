@@ -3,6 +3,7 @@
 
 #define FX "BaseDados"
 #define FO "offlinemessages"
+#define FOC "messageoffline"
 
 typedef struct { //definição do novo tipo utilizador
 	char login[30];
@@ -181,6 +182,7 @@ void offlineSMS(int user,int userSend,char corpo[]){ //guarda a sms num ficheiro
 
 void offlineRECEIVER(int sock,int codeuser){
 	FILE *fp = fopen(FO, "a+");
+	FILE *fpc= fopen(FOC,"w");
 	char message1[1000];
 	char arg[1000];
 	int code=0,n=0,i=0;
@@ -193,7 +195,6 @@ void offlineRECEIVER(int sock,int codeuser){
 			code=0;
 			for ( ; message1[i]!=';'; ++i)
 				code=code*10+(message1[i]-'0');
-			puts(Dados[code].login);
 			strcat(arg,Dados[code].login);
 			strcat(arg," enviou: ");
 			n=strlen(arg);
@@ -205,7 +206,13 @@ void offlineRECEIVER(int sock,int codeuser){
 			strcat(arg,"\n3\0");
 			write(sock,arg,strlen(arg));	
 		}
+		else{
+			fputs(message1,fpc); //coloca a frase na copia
+		}
 		code=0;
 	}
 	fclose(fp);
+	fclose(fpc);
+	remove(FO);
+	rename(FOC,FO);
 }
