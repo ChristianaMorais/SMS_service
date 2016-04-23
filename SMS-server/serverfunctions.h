@@ -58,9 +58,10 @@ void startServer(){
 void *connection_handler(void *socket_desc)
 {
     //Get the socket descriptor
-  int sock = *(int*)socket_desc, i,n=0;
+  int sock = *(int*)socket_desc, i,n=1;
   int read_size;
   int user_code=-1;
+  int coderr=0; //numero de vezes que a mensagem falhou
   char message[1000] , client_message[2000], menuact[3];
   char login[30],pass[30];
 
@@ -72,6 +73,7 @@ void *connection_handler(void *socket_desc)
     	bzero(message, sizeof(message));
       recv(sock , login , 30 , 0);
       formatter(login);
+      puts(login);
       user_code=findUser(login); //compara o nome dado com a base de dados
       ++n;
       if (user_code!=-1)
@@ -154,8 +156,16 @@ void *connection_handler(void *socket_desc)
         case 9:
           break;
         default:
+          if (coderr>=3)
+          {
+            n=9;
+          }
+          else{
         	perror("Erro na comunicação.");
+           ++coderr;
+        }
         	break; // assim so vai desligar esta socket
+
       }
 
     }
