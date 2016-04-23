@@ -19,8 +19,9 @@ void SMScreater(int sock){
 	char user[30],messagel[600];
 	printf("Para: ");
 	scanf("%s",user);
-	printf("\n");
+	//printf("\n");
 	printf("Mensagem: ");
+	fflush(stdin);
 	c=getchar();
 	while(c != '\n' && i < 500){
 		corpo[i]=c;
@@ -28,6 +29,7 @@ void SMScreater(int sock){
 		c=getchar();
 	}
 	corpo[i]='\0';
+	printf("\n\n");
 	bzero(messagel,sizeof(messagel));
 	strcat(messagel,user);
 	strcat(messagel,";");
