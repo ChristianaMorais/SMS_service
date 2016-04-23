@@ -21,7 +21,7 @@ void SMScreater(int sock){
 	scanf("%s",user);
 	//printf("\n");
 	printf("Mensagem: ");
-	fflush(stdin);
+	c=getchar(); // paara absorver o enter que anda por ai perdido
 	c=getchar();
 	while(c != '\n' && i < 500){
 		corpo[i]=c;
