@@ -73,7 +73,7 @@ void *connection_handler(void *socket_desc)
     	bzero(message, sizeof(message));
       recv(sock , login , 30 , 0);
       formatter(login);
-      puts(login);
+      //puts(login);
       user_code=findUser(login); //compara o nome dado com a base de dados
       ++n;
       if (user_code!=-1)
@@ -141,7 +141,7 @@ void *connection_handler(void *socket_desc)
     offlineRECEIVER(sock,user_code);
     while(n!=9){
       bzero(menuact, sizeof(menuact));
-   		recv(sock ,menuact , 3 , 0);//fazer verificação de digitos
+   		recv(sock ,menuact , 1 , 0);//fazer verificação de digitos
       n=menuact[0]-'0';
       switch(n){
         case 1:

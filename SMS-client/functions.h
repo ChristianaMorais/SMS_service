@@ -14,12 +14,20 @@ void mainprinter(){
 
 void SMScreater(int sock){
 	char corpo[500];
+	char c;
+	int i=0;
 	char user[30],messagel[600];
 	printf("Para: ");
 	scanf("%s",user);
 	printf("\n");
 	printf("Mensagem: ");
-	scanf("%s",corpo);
+	c=getchar();
+	while(c != '\n' && i < 500){
+		corpo[i]=c;
+		++i;
+		c=getchar();
+	}
+	corpo[i]='\0';
 	bzero(messagel,sizeof(messagel));
 	strcat(messagel,user);
 	strcat(messagel,";");
