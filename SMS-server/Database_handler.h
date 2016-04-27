@@ -39,6 +39,7 @@ int UserNumber(){ //vai abrir a base de dados e ver quantos utilizadores existem
 utilizador Dados[30]; //temporariamente os dados tem um limite
 
 void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
+	__fpurge(stdin);
 	if (UserNumber()>30)
 	{
 		perror("Base de dados cheia.");
@@ -89,6 +90,7 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 
 void DBreader(){ //leitura de base de dados
 	FILE *fx; 
+	bzero(Dados,sizeof(Dados));
 	char s[60];
 	int n=0,i=0,j=0;
 	fx=fopen(FX,"r");

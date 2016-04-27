@@ -12,8 +12,7 @@ int main(int argc, char *argv[]){
   else{
    //char command[50];
    //strcpy( command, "clear" );
-   system("clear");
-
+    system("clear");
     DBreader();
     startServer();
 
