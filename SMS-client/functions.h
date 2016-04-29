@@ -54,23 +54,23 @@ void *SMSreceaver(void *socket_desc){
 
 	//puts(messagel[(strlen(messagel)-1)]);
 	switch(s){
-		case 1:
+		case 1://utilizadores online
 			messagel[(strlen(messagel)-1)]='\0';
 			printf("%s",messagel);
 			mainprinter();
 			break;
 		case 2: //estado do envio da mensagem
-			puts("Mensagem enviada com sucesso.");
+			puts("Mensagem enviada com sucesso.\n");
 			mainprinter();
 			break;
-		case 3:
+		case 3://recepção de uma mensgaem offline
 			puts("Mensagem Offline");
 			messagel[(strlen(messagel)-1)]='\0';
-			printf("%s",messagel);
-			printf("\n");
+			printf("%s\n",messagel);
 			break;
-		case 4: 
-			puts("Enviado sem sucesso.");
+		case 4: //mensagem enviada sem sucesso
+			puts("Enviado sem sucesso.\n");
+			mainprinter();
 			break;
 		case 7:
 			printf("!!!!! Servidor informou que irá terminar o serviço de SMS !!!!!\nLogout forçado.\n");

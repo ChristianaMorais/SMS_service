@@ -139,26 +139,27 @@ void formatter(char login[]){
 }
 
 void onlineusers(int sock){
-	char message[500]="Urilizadores online:\n";
+	char message[500]="\nUtilizadores online:\n";
 	int i, flag=0;
 	for (i = 0; i < UserNumber(); ++i)	{
 		if (Dados[i].sock!=-1)	{
+			strcat(message," * ");
 			strcat(message,Dados[i].login);
-			strcat(message,"\n");
+			strcat(message,"\n\n");
 			flag=1;
 		}
 	}
 	strcat(message,"1");
 	strcat(message,"\0");
 	if (flag==1){
-		printf("mensagem %s \n",message );
+		//printf("mensagem %s \n",message );
 		write(sock,message,strlen(message));
 	}
-	else //se ninguem esta online comoe stas a a pedir
+	/*else //se ninguem esta online comoe stas a a pedir
 	{
 		char message1[]="Não se encontram utilizadores online.1\n";
 		write(sock,message1,strlen(message1));
-	}
+	}*/
 }
 
 int onlineuserscounter(){
