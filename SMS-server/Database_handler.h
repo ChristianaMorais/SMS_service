@@ -280,3 +280,10 @@ void passwordChanger(int userCode, char password[]){
 	DBreader();
 	printf("A paswoard de %s foi alterada.\n",Dados[userCode].login);
 }
+
+void remoteChanger(int user_code,int sock){
+	char buffer[90];
+	recv(sock ,buffer , 90 , 0);
+	passwordChanger(user_code,buffer);
+	write(sock,"5",30);
+}

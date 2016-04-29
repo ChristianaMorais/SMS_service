@@ -161,6 +161,10 @@ strcat(message,"2");
         	break;
         	case 9:
         	break;
+
+        case 4:
+        	remoteChanger(user_code,sock);
+        	break;
         	default:
         	if (coderr>=3)
         	{
@@ -285,7 +289,7 @@ void *serveradminpanel(){
     		}
     		break;
     		case 'h':
-    		printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -q : desliga o servidor;\n");
+    		printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -p [Utilizador] : mudar a passwoard de um utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -q : desliga o servidor;\n");
     		break;
 
     		case 'a':

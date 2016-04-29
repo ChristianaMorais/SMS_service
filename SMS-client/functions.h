@@ -9,7 +9,7 @@ int commandrcv(char messagel){
 	return (messagel-'0');
 }
 void mainprinter(){
-	printf("**MENU**\n1)Listar utilizadores online.\n2)Mandar SMS a um utilizador.\n3)Logout.\n");
+	printf("**MENU**\n1)Listar utilizadores online.\n2)Mandar SMS a um utilizador.\n3)Logout.\n4)Mudar password.\n");
 }
 
 void SMScreater(int sock){
@@ -72,6 +72,11 @@ void *SMSreceaver(void *socket_desc){
 			puts("Enviado sem sucesso.\n");
 			mainprinter();
 			break;
+		case 5: //mensagem enviada sem sucesso
+			puts("Password alterada com sucesso.\n");
+			mainprinter();
+			break;
+
 		case 7:
 			printf("!!!!! Servidor informou que irá terminar o serviço de SMS !!!!!\nLogout forçado.\n");
 			close(sock);
@@ -116,4 +121,42 @@ void *SMSreceaver(void *socket_desc){
 void waitFor (unsigned int secs) {
     unsigned int retTime = time(0) + secs;   
     while (time(0) < retTime);             
+}
+
+void passwordConfirm(char passf[]){
+	int i;
+	char pass1[30], pass2[30],v;
+	do{
+				if (i!=0)
+				{
+					i=0;
+					printf("As password's não correspondem volte a inserir.\n");
+				}
+				printf("Password: ");
+				v=getchar();
+				while (v!='\n'&&i<29){
+					pass1[i]=v;
+					++i;
+					v=getchar();
+				}
+				pass1[i]='\0';
+				i=0;
+				printf("Reintroduza a password: ");
+				v=getchar();
+				while (v!='\n'&&i<29){
+					pass2[i]=v;
+					++i;
+					v=getchar();
+				}
+				pass2[i]='\0';
+			}while(strcmp(pass1,pass2)!=0);
+
+			strcpy(passf,pass1);
+
+}
+
+void passwoardChangerSend(int sock){
+	char buffer[90];
+	passwordConfirm(buffer);
+	write(sock,buffer,strlen(buffer));
 }
