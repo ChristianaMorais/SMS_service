@@ -283,6 +283,7 @@ void passwordChanger(int userCode, char password[]){
 
 void remoteChanger(int user_code,int sock){
 	char buffer[90];
+	bzero(buffer,sizeof(buffer));
 	recv(sock ,buffer , 90 , 0);
 	//puts(buffer);
 	passwordChanger(user_code,buffer);

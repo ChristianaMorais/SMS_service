@@ -128,7 +128,7 @@ void passwordConfirm(char passf[]){
 	char pass1[30], pass2[30],v;
 	__fpurge(stdin);
 	do{
-				v=getchar();
+				//v=getchar();
 				if (i!=0)
 				{
 					i=0;
