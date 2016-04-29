@@ -1,6 +1,6 @@
 //DataBase handler
 //#include <stdio.h>
-
+#include "stdlib.h"
 #define FX "BaseDados"
 #define FO "offlinemessages"
 #define FOC "messageoffline"
@@ -22,7 +22,7 @@ void DBcreator(){
 }
 
 void onlineLogreset(){//faz reset ao ficheiro de log de utilizadores online
-	FILE *fp = fopen(FX, "w");
+	FILE *fp = fopen(FON, "w");
     fclose(fp);
 }
 
@@ -49,7 +49,7 @@ int UserNumber(){ //vai abrir a base de dados e ver quantos utilizadores existem
 utilizador Dados[30]; //temporariamente os dados tem um limite
 
 void passwordConfirm(char passf[]){
-	int i;
+	int i=0;
 	char pass1[30], pass2[30],v;
 	do{
 				if (i!=0)
@@ -57,6 +57,7 @@ void passwordConfirm(char passf[]){
 					i=0;
 					printf("As password's não correspondem volte a inserir.\n");
 				}
+				__fpurge(stdin);
 				printf("Password: ");
 				v=getchar();
 				while (v!='\n'&&i<29){
@@ -100,8 +101,8 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 	}
 	else{
 		char pass1[29];
-		FILE *fx=fopen(FX,"a");
 		passwordConfirm(pass1);
+		FILE *fx=fopen(FX,"a");
 		strcat(arg,";");
 		strcat(arg,pass1);
 		strcat(arg,";\n");
@@ -117,8 +118,8 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 void logReader(){
 	FILE *fp = fopen(FON, "r");
 	int sock, user=0,i;
-	char s[60]
-	while(fgets(s,60,fx)){
+	char s[60];
+	while(fgets(s,60,fp)){
 		for (i = 0; s[i]!=';'; ++i)
 			user=user*10+s[i];
 		++i;
@@ -134,10 +135,10 @@ void logReader(){
 void DBreader(){ //leitura de base de dados
 	FILE *fx; 
 	bzero(Dados,sizeof(Dados));
-	char s[60];
+	char s[100];
 	int n=0,i=0,j=0;
 	fx=fopen(FX,"r");
-	while(fgets(s,60,fx)){
+	while(fgets(s,100,fx)){
 		j=0;
 		for(i=0;s[i]!=';';++i) {
 			Dados[n].login[j]=s[i];
@@ -177,9 +178,11 @@ void logcreator(int code, int socket){
 	char buffer[60], aux[50];
 	bzero(buffer,sizeof(buffer));
 	bzero(aux,sizeof(aux));
-	itoa(code,buffer,10);//conversao  int para string
+	snprintf(buffer, 60,"%d",code);
+	//itoa(code,buffer,10);//conversao  int para string
 	strcat(buffer,";");
-	itoa(socket,aux,10);//outra conversão
+	snprintf(aux, 50,"%d",socket);
+	//itoa(socket,aux,10);//outra conversão
 	strcat(buffer,aux);
 	strcat(buffer,";\n");
 	fputs(buffer,fp);
@@ -188,7 +191,8 @@ void logcreator(int code, int socket){
 
 void socketSaver(int code, int socket){
 	Dados[code].sock=socket;
-	Logcreator(code,socket);
+	if (socket!=-1)
+		logcreator(code,socket);
 }
 
 void formatter(char login[]){

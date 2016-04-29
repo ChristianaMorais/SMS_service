@@ -124,7 +124,7 @@ void waitFor (unsigned int secs) {
 }
 
 void passwordConfirm(char passf[]){
-	int i;
+	int i=0;
 	char pass1[30], pass2[30],v;
 	__fpurge(stdin);
 	do{

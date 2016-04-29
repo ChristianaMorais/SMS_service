@@ -15,6 +15,7 @@ int main(int argc, char *argv[]){
     system("clear");
     onlineLogreset();
     DBreader();
+    //puts("falhou");
     startServer();
 
 
