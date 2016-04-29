@@ -13,6 +13,7 @@ int main(int argc, char *argv[]){
    //char command[50];
    //strcpy( command, "clear" );
     system("clear");
+    onlineLogreset();
     DBreader();
     startServer();
 

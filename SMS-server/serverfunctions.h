@@ -181,6 +181,7 @@ strcat(message,"2");
     }
 
     socketSaver(user_code, -1);
+    logLogoff(user_code);
     printf("# %s fez logout\n",Dados[user_code].login );
     message[0]='\0';
     strcat(message,"9");

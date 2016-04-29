@@ -5,6 +5,9 @@
 #define FO "offlinemessages"
 #define FOC "messageoffline"
 
+#define FC "config" //configuração
+#define FON "online" //utilizadores online
+
 int findUser(char login[]);
 
 typedef struct { //definição do novo tipo utilizador
@@ -15,6 +18,11 @@ typedef struct { //definição do novo tipo utilizador
 
 void DBcreator(){
     FILE *fp = fopen(FX, "ab+");
+    fclose(fp);
+}
+
+void onlineLogreset(){//faz reset ao ficheiro de log de utilizadores online
+	FILE *fp = fopen(FX, "w");
     fclose(fp);
 }
 
@@ -91,9 +99,8 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 		return;
 	}
 	else{
-		FILE *fx; 
 		char pass1[29];
-		fx=fopen(FX,"a");
+		FILE *fx=fopen(FX,"a");
 		passwordConfirm(pass1);
 		strcat(arg,";");
 		strcat(arg,pass1);
@@ -105,6 +112,23 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
     				arg[i]='\0';
     			printf("Utilizador %s foi adicionado.\n",arg);		
 	}
+}
+
+void logReader(){
+	FILE *fp = fopen(FON, "r");
+	int sock, user=0,i;
+	char s[60]
+	while(fgets(s,60,fx)){
+		for (i = 0; s[i]!=';'; ++i)
+			user=user*10+s[i];
+		++i;
+		for ( ; s[i]!=';'; ++i)
+			sock=sock*10+s[i];
+		Dados[user].sock=sock;
+	user=0;
+	sock=0;
+	}
+	fclose(fp);
 }
 
 void DBreader(){ //leitura de base de dados
@@ -132,6 +156,7 @@ void DBreader(){ //leitura de base de dados
 		++n;
 	}
 	fclose(fx);
+	logReader();//leitura de utilizadores online
 }
 
 int findUser(char login[]){ //na base de dados procura se existe um utilizador com o login inserido
@@ -147,8 +172,23 @@ int findUser(char login[]){ //na base de dados procura se existe um utilizador c
 
 }
 
+void logcreator(int code, int socket){
+	FILE *fp = fopen(FON, "a");
+	char buffer[60], aux[50];
+	bzero(buffer,sizeof(buffer));
+	bzero(aux,sizeof(aux));
+	itoa(code,buffer,10);//conversao  int para string
+	strcat(buffer,";");
+	itoa(socket,aux,10);//outra conversão
+	strcat(buffer,aux);
+	strcat(buffer,";\n");
+	fputs(buffer,fp);
+    fclose(fp);
+}
+
 void socketSaver(int code, int socket){
 	Dados[code].sock=socket;
+	Logcreator(code,socket);
 }
 
 void formatter(char login[]){
@@ -268,7 +308,11 @@ void passwordChanger(int userCode, char password[]){
 				buffer[p]=password[c];
 				++p;
 			}
-			strcat(buffer,";\n");
+			buffer[p]=';';
+			++p;
+			buffer[p]='\n';
+			++p;
+			buffer[p]='\0';
 			fputs(buffer,fpc);						
 		}  
 		++i;
@@ -288,4 +332,22 @@ void remoteChanger(int user_code,int sock){
 	//puts(buffer);
 	passwordChanger(user_code,buffer);
 	write(sock,"5",30);
+}
+
+void logLogoff(int user_code){
+	FILE *fpc= fopen(FOC,"w");
+	FILE *fp = fopen(FON,"ab+");
+	char buffer[60];
+	int target=0,i;
+	while(fgets(buffer,60,fp)){
+		for (i = 0; buffer[i]!=';'; ++i)
+			target=target*10+buffer[i];
+		if (user_code!=target)
+			fputs(buffer,fpc);
+		target=0;
+	}
+	fclose(fp);
+	fclose(fpc);
+	remove(FX);
+	rename(FOC,FX);
 }
