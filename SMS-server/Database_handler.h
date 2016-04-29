@@ -5,6 +5,8 @@
 #define FO "offlinemessages"
 #define FOC "messageoffline"
 
+int findUser(char login[]);
+
 typedef struct { //definição do novo tipo utilizador
 	char login[30];
 	char password[30];
@@ -38,8 +40,41 @@ int UserNumber(){ //vai abrir a base de dados e ver quantos utilizadores existem
 
 utilizador Dados[30]; //temporariamente os dados tem um limite
 
+void passwordConfirm(char passf[]){
+	int i;
+	char pass1[30], pass2[30],v;
+	do{
+				if (i!=0)
+				{
+					i=0;
+					printf("As password's não correspondem volte a inserir.\n");
+				}
+				printf("Password: ");
+				v=getchar();
+				while (v!='\n'&&i<29){
+					pass1[i]=v;
+					++i;
+					v=getchar();
+				}
+				pass1[i]='\0';
+				i=0;
+				printf("Reintroduza a password: ");
+				v=getchar();
+				while (v!='\n'&&i<29){
+					pass2[i]=v;
+					++i;
+					v=getchar();
+				}
+				pass2[i]='\0';
+			}while(strcmp(pass1,pass2)!=0);
+
+			strcpy(passf,pass1);
+
+}
+
 void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 	__fpurge(stdin);
+	int i;
 	if (UserNumber()>30)
 	{
 		perror("Base de dados cheia.");
@@ -49,42 +84,26 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 	if (strlen(arg)>29){//medida de segurança
 		perror("Nome de utilizador com carateres a mais!");
 	}
+	i=findUser(arg);
+	if (i!=-1)
+	{
+		puts("Nome de utilizador já existente.");
+		return;
+	}
 	else{
 		FILE *fx; 
-		char s;
-		char pass1[29], pass2[29];
-		int n=0;
+		char pass1[29];
 		fx=fopen(FX,"a");
-		do{
-			if (n!=0)
-			{
-				n=0;
-				printf("As passwod's não correspondem volte a inserir.\n");
-			}
-			printf("Password: ");
-			s=getchar();
-			while (s!='\n'&&n<29){
-				pass1[n]=s;
-				++n;
-				s=getchar();
-			}
-			pass1[n]='\0';
-			n=0;
-			printf("Reintroduza a password: ");
-			s=getchar();
-			while (s!='\n'&&n<29){
-				pass2[n]=s;
-				++n;
-				s=getchar();
-			}
-			pass2[n]='\0';
-		}while(strcmp(pass1,pass2)!=0);
+		passwordConfirm(pass1);
 		strcat(arg,";");
 		strcat(arg,pass1);
 		strcat(arg,";\n");
 	//printf("%s\n",arg);
 		fputs(arg,fx);
-		fclose(fx);		
+		fclose(fx);
+		for ( i = 0; arg[i] != ';'; ++i);
+    				arg[i]='\0';
+    			printf("Utilizador %s foi adicionado.\n",arg);		
 	}
 }
 
@@ -230,3 +249,34 @@ void offlineRECEIVER(int sock,int codeuser){
 	rename(FOC,FO);
 }
 
+
+void passwordChanger(int userCode, char password[]){
+	int i,p, c;
+	char buffer[60];
+	FILE *fp = fopen(FX, "a+");
+	FILE *fpc= fopen(FOC,"w");
+
+	while(fgets(buffer,60,fp)){
+		if (userCode!=i){
+			fputs(buffer,fpc);
+		}
+		else{
+			for (p = 0; buffer[p] != ';' ; ++p);
+			++p;
+			for (c = 0 ; password[c] != '\0'; ++c)
+			{
+				buffer[p]=password[c];
+				++p;
+			}
+			strcat(buffer,";\n");
+			fputs(buffer,fpc);						
+		}  
+		++i;
+	}
+	fclose(fp);
+	fclose(fpc);
+	remove(FX);
+	rename(FOC,FX);
+	DBreader();
+	printf("A paswoard de %s foi alterada.\n",Dados[userCode].login);
+}

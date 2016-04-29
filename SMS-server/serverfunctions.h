@@ -231,7 +231,7 @@ return 0;
 
 
 void *serveradminpanel(){
-	char op[50], user[60], decisao,v;
+	char op[50], user[60], decisao,v,pass1[30],pass2[30];
 	int i, b, codeuser, flag=0,p=0;
 	while(1){
    // scanf("%s",op);
@@ -244,9 +244,31 @@ void *serveradminpanel(){
 			v=getchar();
 		}
 		op[i]='\0';
-    __fpurge(stdin); //limpar o buffer metdo especifico para c em linux
-    if(op[0]=='-'){
+		__fpurge(stdin); //limpar o buffer metdo especifico para c em linux
+		if(op[0]=='-'){
     	switch(op[1]){
+    		case 'p'://alterar a passwoard
+    			i=3;
+    			b=0;
+    			bzero(user,sizeof(user));
+    			while(op[i]!='\0'){
+    						user[b]=op[i];
+    						++i;
+    						++b;
+    			}
+    			user[b]='\0';
+    			//puts(user);
+    			codeuser=findUser(user);
+    			if (codeuser!=-1){
+    				i=0;
+    				passwordConfirm(user);
+    				passwordChanger(codeuser,user);
+    			}
+    			else
+    				puts("Utilizador inexistente.");
+    			__fpurge(stdin);
+    			break;
+
     		case 'q':
     		printf("!!!!!\nTem a certeza que pretende terminar o servidor?\nEstão neste momento %d utilizadores online...\nConfirme por favor (s/n) ? ", onlineuserscounter());
     		//decisao=getchar();
@@ -263,17 +285,17 @@ void *serveradminpanel(){
     		}
     		break;
     		case 'h':
-    		printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -h : mostra a ajuda à consola;\n -q : desliga o servidor;\n");
+    		printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -q : desliga o servidor;\n");
     		break;
+
     		case 'a':
     			printf("Novo utilizador: ");
     			scanf("%s",user);
+    			__fpurge(stdin);
     			addUser(user);
-    			DBreader();
-    			for ( i = 0; user[i] != ';'; ++i);
-    				user[i]='\0';
-    			printf("Utilizador %s foi adicionado.\n",user);
+    			DBreader();    			
     		break;
+
     		case 'r':
     		i=3;
     		if (op[3]=='-')
@@ -330,21 +352,24 @@ void *serveradminpanel(){
     							fclose(fpc);
     							remove(FX);
     							rename(FOC,FX);
-    						}
     							DBreader(); //podera conter outros nomes 
     							puts("Utilizador eliminado.");
     							++i;
     							b=0;
     							p=0;
-    						}                
+    						}
+    						else
+    							puts("Utilizador inexistente.");
+    										
+    					}                
     				}
     				//printf("\n cara ter %c\n",op[i-1]);
     				flag=0;
     			printf("\n");
     			break;
+
     			default:
-          //printf("%c\n",op[1]);
-    			printf("Opção não reconhecida.\n");
+          	printf("Opção não reconhecida.\n");
     			break;
     		//}
     	}
@@ -365,3 +390,5 @@ int confirma(){
 	else
 		return 1;
 }
+
+
