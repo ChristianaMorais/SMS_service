@@ -139,6 +139,7 @@ int main(int argc, char const *argv[])
 						break;
 					case 4:
 						write(sock,"4",1);
+						__fpurge(stdin);
 						passwoardChangerSend(sock);
 						break;
 					default:
