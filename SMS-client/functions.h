@@ -126,13 +126,14 @@ void waitFor (unsigned int secs) {
 void passwordConfirm(char passf[]){
 	int i;
 	char pass1[30], pass2[30],v;
+	__fpurge(stdin);
 	do{
 				if (i!=0)
 				{
 					i=0;
 					printf("As password's não correspondem volte a inserir.\n");
 				}
-				printf("Password: ");
+				printf("\nPassword: ");
 				v=getchar();
 				while (v!='\n'&&i<29){
 					pass1[i]=v;
