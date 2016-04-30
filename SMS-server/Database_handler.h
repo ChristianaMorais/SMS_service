@@ -362,11 +362,27 @@ int portReader(){
 	FILE *fp = fopen(FC,"ab+");
 	while(fgets(buffer,10,fp) && c!=1){
 		i=0;
-		for (c = 0; buffer[c]!='\n'; ++c){
+		for (c = 0; buffer[c]!='\n' && buffer[c]!='\0'; ++c){
 			i=i*10+(buffer[c]-'0');
 		}
 		c=1;
 	}
 	fclose(fp);
 	return i;
+}
+
+void portChanger(int port){
+	char buffer[60];
+	FILE *fp = fopen(FC,"ab+");
+	FILE *fpc= fopen(FOC,"w");
+	snprintf(buffer, 60,"%d",port);
+	fputs(buffer,fpc);
+	fputs("\n",fpc);
+	fgets(buffer,60,fp);//linha da porta nao serve para nada
+	while(fgets(buffer,60,fp))
+		fputs(buffer,fpc);
+	fclose(fp);
+	fclose(fpc);
+	remove(FC);
+	rename(FOC,FC);
 }

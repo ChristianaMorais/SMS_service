@@ -290,9 +290,25 @@ void *serveradminpanel(){
     		}
     		break;
     		case 'h':
-    		printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -p [Utilizador] : mudar a passwoard de um utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -q : desliga o servidor;\n");
+    		  printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -p [Utilizador] : mudar a passwoard de um utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -:[port] : altera a porta do servdior;\n -q : desliga o servidor;\n");
     		break;
 
+       /* case ':':
+          i=2;
+          b=0;
+          bzero(user,sizeof(user));
+          while(op[i]!='\0'){
+            if (isdigit(op[i])!=0){
+              puts("Porta inválida!");
+              break;
+            }
+            b=b*10+(op[i]-'0');
+            ++i;
+          }
+          portChanger(b);
+          printf("A porta do servidor foi alterada para a porta %d.\nPara que as alterações façam efeito reinicie o servidor.\n",b);
+
+        break;*/
     		case 'a':
     			printf("Novo utilizador: ");
     			scanf("%s",user);
