@@ -117,14 +117,14 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 
 void logReader(){
 	FILE *fp = fopen(FON, "r");
-	int sock, user=0,i;
+	int sock=0, user=0,i;
 	char s[60];
 	while(fgets(s,60,fp)){
 		for (i = 0; s[i]!=';'; ++i)
-			user=user*10+s[i];
+			user=user*10+(s[i]-'0');
 		++i;
 		for ( ; s[i]!=';'; ++i)
-			sock=sock*10+s[i];
+			sock=sock*10+(s[i]-'0');
 		Dados[user].sock=sock;
 	user=0;
 	sock=0;
@@ -345,7 +345,7 @@ void logLogoff(int user_code){
 	int target=0,i;
 	while(fgets(buffer,60,fp)){
 		for (i = 0; buffer[i]!=';'; ++i)
-			target=target*10+buffer[i];
+			target=target*10+(buffer[i]-'0');
 		if (user_code!=target)
 			fputs(buffer,fpc);
 		target=0;
