@@ -19,7 +19,7 @@ void startServer(){
    //Definir parametros de serv_addr
    serv_addr.sin_family = AF_INET;
    serv_addr.sin_addr.s_addr = INADDR_ANY; //definição de ip 
-   serv_addr.sin_port = htons( 2524 );//defenição de porta 
+   serv_addr.sin_port = htons( portReader() );//defenição de porta 
 
    //juntar tudo
    if( bind(sockfd,(struct sockaddr *)&serv_addr , sizeof(serv_addr)) < 0){
@@ -285,7 +285,7 @@ void *serveradminpanel(){
     				if (Dados[i].sock!=-1)
     					write(Dados[i].sock,"7",2);
     			}
-    			puts("!!!!! Servidor terminado !!!!!");
+    			puts("!!!!! Servidor terminado !!!!!\n\n");
     			exit(0);
     		}
     		break;

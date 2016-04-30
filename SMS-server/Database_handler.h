@@ -352,6 +352,21 @@ void logLogoff(int user_code){
 	}
 	fclose(fp);
 	fclose(fpc);
-	remove(FX);
-	rename(FOC,FX);
+	remove(FON);
+	rename(FOC,FON);
+}
+
+int portReader(){
+	int i=2524,c=0;
+	char buffer[10];
+	FILE *fp = fopen(FC,"ab+");
+	while(fgets(buffer,10,fp) && c!=1){
+		i=0;
+		for (c = 0; buffer[c]!='\n'; ++c){
+			i=i*10+(buffer[c]-'0');
+		}
+		c=1;
+	}
+	fclose(fp);
+	return i;
 }
