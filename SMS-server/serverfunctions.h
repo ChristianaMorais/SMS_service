@@ -204,17 +204,17 @@ int smssender(int user_code,int socksender){
   {
     write(socksender,"4",30);//pode dar erro
     return 1;
-}
+	}
 
   //isolar a mensagem em si
-for (++i; argumentos[i] != '\0'; ++i){
-	corpo[n]=argumentos[i];
-	++n;
-}
-corpo[n]='\0';
+	for (++i; argumentos[i] != '\0'; ++i){
+		corpo[n]=argumentos[i];
+		++n;
+	}
+	corpo[n]='\0';
   //escolha do metodo de envio
   //argumentos[0]='\0'; //reenicia a string 
-bzero(argumentos,sizeof(argumentos));
+	bzero(argumentos,sizeof(argumentos));
   if (Dados[userSend].sock!=-1)//online
   {
   	strcat(argumentos,Dados[user_code].login);
@@ -228,10 +228,10 @@ bzero(argumentos,sizeof(argumentos));
   {
     offlineSMS(user_code,userSend,corpo); //temporario em breve criar o serviço de sms offline
     //return;
-}
-write(socksender,"2",30);
-printf("-> %s mandou uma mensagem a %s\n",Dados[user_code].login, Dados[userSend].login);
-return 0;
+	}
+	write(socksender,"2",30);
+	printf("-> %s mandou uma mensagem a %s\n",Dados[user_code].login, Dados[userSend].login);
+	return 0;
 }
 
 
@@ -293,20 +293,27 @@ void *serveradminpanel(){
     		  printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -p [Utilizador] : mudar a passwoard de um utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -:[port] : altera a porta do servdior;\n -q : desliga o servidor;\n");
     		break;
 
-       /* case ':':
+        case ':':
           i=2;
           b=0;
+          //printf("%s\n",op );
           bzero(user,sizeof(user));
           while(op[i]!='\0'){
-            if (isdigit(op[i])!=0){
+            if (isdigit(op[i])==0){
               puts("Porta inválida!");
               break;
             }
+             //printf("%d ",b );
             b=b*10+(op[i]-'0');
             ++i;
           }
+          //printf("%d\n",b );
           portChanger(b);
           printf("A porta do servidor foi alterada para a porta %d.\nPara que as alterações façam efeito reinicie o servidor.\n",b);
+
+        break;
+        /*case 'm':
+			globalSMS   	
 
         break;*/
     		case 'a':

@@ -262,6 +262,7 @@ void offlineRECEIVER(int sock,int codeuser){
 	char message1[1000];
 	char arg[1000];
 	int code=0,n=0,i=0;
+	bzero(arg,sizeof(arg));
 	while(fgets(message1,1000,fp)){
 		for (i = 0; message1[i]!=';' ; ++i)
 			code=code*10+(message1[i]-'0');
