@@ -234,6 +234,36 @@ int smssender(int user_code,int socksender){
 	return 0;
 }
 
+void globalSMS(){
+	__fpurge(stdin);
+	char message[600], v;
+	int i=6;
+	strcat(message,"admin;");
+	printf("Mensgaem global: ");
+	v=getchar();
+	while(v!='\n' && i<592){
+		message[i]=v;
+		++i;
+		v=getchar();
+	}
+	//strcat(message,";8");
+	__fpurge(stdin);
+	//message[i]=';';
+	//++i;
+	message[i]='8';
+	++i;
+	message[i]='\0';
+	for (i = 0; i < UserNumber(); ++i)
+	{
+		if (Dados[i].sock!=-1)
+		{
+			write(Dados[i].sock , message , strlen(message));
+		}
+	}
+	puts("->Mensagem global enviada.");
+
+
+}
 
 void *serveradminpanel(){
 	char op[50], user[60], decisao,v,pass1[30],pass2[30];
@@ -290,7 +320,7 @@ void *serveradminpanel(){
     		}
     		break;
     		case 'h':
-    		  printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -p [Utilizador] : mudar a passwoard de um utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -:[port] : altera a porta do servdior;\n -q : desliga o servidor;\n");
+    		  printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -m : Enviar mensagem global;\n -p [Utilizador] : mudar a passwoard de um utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -:[port] : altera a porta do servdior;\n -q : desliga o servidor;\n");
     		break;
 
         case ':':
@@ -312,10 +342,10 @@ void *serveradminpanel(){
           printf("A porta do servidor foi alterada para a porta %d.\nPara que as alterações façam efeito reinicie o servidor.\n",b);
 
         break;
-        /*case 'm':
-			globalSMS   	
+        case 'm':
+			globalSMS();   	
 
-        break;*/
+        break;
     		case 'a':
     			printf("Novo utilizador: ");
     			scanf("%s",user);
