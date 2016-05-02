@@ -5,7 +5,7 @@
 #include "sys/socket.h"    //socket
 #include "arpa/inet.h" //inet_addr
 #include "ctype.h"
-
+#include "passinput.h"
 
 //files
 #include "functions.h"

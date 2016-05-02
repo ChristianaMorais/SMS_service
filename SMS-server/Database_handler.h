@@ -59,20 +59,20 @@ void passwordConfirm(char passf[]){
 				}
 				__fpurge(stdin);
 				printf("Password: ");
-				v=getchar();
+				v=getch();
 				while (v!='\n'&&i<29){
 					pass1[i]=v;
 					++i;
-					v=getchar();
+					v=getch();
 				}
 				pass1[i]='\0';
 				i=0;
 				printf("Reintroduza a password: ");
-				v=getchar();
+				v=getch();
 				while (v!='\n'&&i<29){
 					pass2[i]=v;
 					++i;
-					v=getchar();
+					v=getch();
 				}
 				pass2[i]='\0';
 			}while(strcmp(pass1,pass2)!=0);

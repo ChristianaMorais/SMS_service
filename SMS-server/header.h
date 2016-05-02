@@ -8,7 +8,7 @@
 #include "ctype.h"
 #include "unistd.h"    //write
 #include "pthread.h" //ao executar no final colocar a bibioleta -lpthread
-
+#include "passinput.h"
 //Funções a adicionar
 #include "Database_handler.h"
 #include "serverfunctions.h"

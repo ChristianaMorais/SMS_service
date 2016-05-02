@@ -16,7 +16,7 @@ int main(int argc, char const *argv[])
 		
 			char ipserver[10];//pode falhar por causa da terminar da strting
 			int port=0, i=0,n=0,*newsock;
-			char cmd;
+			char c;
 			//incialização
 			//char *testvar = strdup(argv[0]);
 			//printf("%s %c\n",argv[1],argv[1][i] );
@@ -95,8 +95,15 @@ int main(int argc, char const *argv[])
 					puts("Falhou a passwoard. Tente de novo.");
 
 				printf("Passwoard: "); //falta desligar o echo da password
-				
-				scanf("%s", message);
+				i=0;
+				c=getch();
+				while(c!='\n'){
+					message[i]=c;
+					++i;
+					c=getch();
+				}
+				message[i]='\0';
+				//scanf("%s", message);
 				write(sock, message , strlen(message));
 				bzero(message, sizeof(message));
 				recv(sock, message,sizeof(message), 0);//ver o maximo d eparammetros existemtes

@@ -1,5 +1,9 @@
 #include "time.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "sys/socket.h"
 //#define KMAG  "\x1B[35m"
+
 int commandrcv(char messagel){
 	if (isdigit(messagel)==0)
 	{
@@ -146,20 +150,20 @@ void passwordConfirm(char passf[]){
 				i=0;*/
 
 				printf("\n Nova password: ");
-				v=getchar();
+				v=getch();
 				while (v!='\n'&&i<29){
 					pass1[i]=v;
 					++i;
-					v=getchar();
+					v=getch();
 				}
 				pass1[i]='\0';
 				i=0;
 				printf("Reintroduza a password: ");
-				v=getchar();
+				v=getch();
 				while (v!='\n'&&i<29){
 					pass2[i]=v;
 					++i;
-					v=getchar();
+					v=getch();
 				}
 				pass2[i]='\0';
 			}while(strcmp(pass1,pass2)!=0);
