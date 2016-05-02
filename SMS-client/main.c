@@ -43,7 +43,7 @@ int main(int argc, char const *argv[])
 				{
 					//printf("%c %d \n",argv[1][i],i );
 					perror("Porta inválida.");
-					exit(1);
+					exit(EXIT_FAILURE);
 				}
 				port=port*10+(argv[1][i]-'0');
 
@@ -54,7 +54,7 @@ int main(int argc, char const *argv[])
 			if (sock==-1)
 			{
 				perror("A criação da socket falhou.");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			//atribuir caracteristicas ao servidor 
 			server.sin_addr.s_addr = inet_addr( ipserver );//
@@ -65,15 +65,17 @@ int main(int argc, char const *argv[])
 			if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
 			{
 				perror("A conexão falhou.");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}else
 			puts(" A conexão ao servidor foi efetuada com sucesso.");
 			
 			i=-1; //incicar estado
 			recv(sock, message,sizeof(message), 0); //recebe a mensagem de controlo do servidor, dando origem a correspondecia de user
+			
 			do{
 				if (i!=-1){
 					puts("Falhou o login. Tente de novo.");
+					printf("Login: ");
 					scanf("%s",user);
 				}
 				bzero(message, sizeof(message));
@@ -85,7 +87,7 @@ int main(int argc, char const *argv[])
 			if (i==1)
 			{
 				perror("Atingiu o limite de logins.");
-				exit(1);
+				exit(EXIT_FAILURE);
 			}
 			/*Metodo para as passwoard's */
 			i=-1;
@@ -114,8 +116,8 @@ int main(int argc, char const *argv[])
 			fflush(stdout);
 			if (i==1)
 			{
-				perror("Atingiu o limite de tentativas para a passwoard.");
-				exit(1);
+				perror("\nAtingiu o limite de tentativas para a passwoard.");
+				exit(EXIT_FAILURE);
 			}
 			//puts("entrada");
 			//criação da thread
@@ -126,9 +128,9 @@ int main(int argc, char const *argv[])
           if( pthread_create( &sniffer_thread , NULL ,  SMSreceaver ,(void*) sock) < 0)
           {
               perror("Não conseguiu criar a thread");
-              exit(1);
+              exit(EXIT_FAILURE);
           }
-          printf("Utilizador %s autenticado. Pode começar a usar o sistema!\n",user);
+          printf("\nUtilizador %s autenticado. Pode começar a usar o sistema!\n",user);
           mainprinter();
 			while(1){
 				scanf("%d",&i);
@@ -156,7 +158,7 @@ int main(int argc, char const *argv[])
 		}
 		else{
 			perror("Chamada do cliente sem argumentos!");
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 		return 0;
 	} 

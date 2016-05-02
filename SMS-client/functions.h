@@ -8,7 +8,7 @@ int commandrcv(char messagel){
 	if (isdigit(messagel)==0)
 	{
 		perror("A comunicação falhou.");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return (messagel-'0');
 }
@@ -116,7 +116,7 @@ void *SMSreceaver(void *socket_desc){
 		default:
 			puts("Insucesso na comunicação.");
 			close(sock);
-			exit(1);
+			exit(EXIT_FAILURE);
 			break;
 	}
 	}

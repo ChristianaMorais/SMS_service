@@ -13,7 +13,7 @@ void startServer(){
 
    if (sockfd == -1) { // verificação de estado da socket
    	perror("ERRO Impossivel de abrir socket");
-   	exit(1);
+   	exit(EXIT_FAILURE);
    }
 
    //Definir parametros de serv_addr
@@ -24,7 +24,7 @@ void startServer(){
    //juntar tudo
    if( bind(sockfd,(struct sockaddr *)&serv_addr , sizeof(serv_addr)) < 0){
    	perror("ERRO - Bind falhou");
-   	exit(1);
+   	exit(EXIT_FAILURE);
    }
     listen(sockfd , 3); //espera por ligação o numero e o maximo de ligaçoes
 
@@ -33,7 +33,7 @@ void startServer(){
     if( pthread_create( &menu_thread , NULL ,  serveradminpanel , NULL) < 0)
     {
     	perror("could not create thread");
-    	exit(1);
+    	exit(EXIT_FAILURE);
     }
 
     puts("Servidor iniciado.");
@@ -49,7 +49,7 @@ void startServer(){
     	if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*) newsock) < 0)
     	{
     		perror("could not create thread");
-    		exit(1);
+    		exit(EXIT_FAILURE);
     	}
 
     }
@@ -57,7 +57,7 @@ void startServer(){
     if (client < 0)
     {
     	perror("accept failed");
-    	exit(1);
+    	exit(EXIT_FAILURE);
     }
 }
 
@@ -65,7 +65,7 @@ void startServer(){
 void *connection_handler(void *socket_desc)
 {
     //Get the socket descriptor
-	int sock = *(int*)socket_desc, i,n=1;
+	int sock = *(int*)socket_desc, i,n=0;
 	int read_size;
 	int user_code=-1;
   int coderr=0; //numero de vezes que a mensagem falhou

@@ -87,7 +87,7 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 	if (UserNumber()>30)
 	{
 		perror("Base de dados cheia.");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 
 	if (strlen(arg)>29){//medida de segurança
