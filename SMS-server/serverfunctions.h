@@ -90,6 +90,7 @@ void *connection_handler(void *socket_desc)
       	bzero(message, sizeof(message));
         strcat(message,"2");//codigo para dizer que o login foi aceite
         write(sock , message , strlen(message));
+        break;
     }
     else{
     	if (n==3){
@@ -105,7 +106,8 @@ void *connection_handler(void *socket_desc)
       {
       	bzero(message, sizeof(message));
           strcat(message,"0"); //codigo para continuar o ciclo
-          write(sock , message , strlen(message));          
+          write(sock , message , strlen(message));  
+
       }
   }
 }
@@ -117,7 +119,7 @@ while(n!=0 && n <4){
 	bzero(pass, sizeof(pass));
 	recv(sock , pass , 30 , 0);
 	formatter(pass);
-  puts(pass);
+  //puts(pass);
       if (strcmp(pass,Dados[user_code].password)==0) //confirma se a passwoard corresponde com o utilizador
       	break;
       ++n;
