@@ -21,6 +21,7 @@ char getch(void) {
   initTermios(0);
   ch = getchar();
   resetTermios();
-  printf("*");
+  if (isalnum(ch))
+    printf("*");
   return ch;
 }

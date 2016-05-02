@@ -76,11 +76,12 @@ void *connection_handler(void *socket_desc)
     write(sock , message , strlen(message));//o envio desta tem como objetivo sincronizar os dois servidores permitindo que as comunicações nao falhem
 
     /*Autenticação do nome do utilizador*/
-    while(n!=0 ){ //verificação de utilizador
+    while(1){ //verificação de utilizador
     	bzero(message, sizeof(message));
     	recv(sock , login , 30 , 0);
     	formatter(login);
       //puts(login);
+      //printf("%s \n",login);
       user_code=findUser(login); //compara o nome dado com a base de dados
       ++n;
       if (user_code!=-1)
@@ -116,6 +117,7 @@ while(n!=0 && n <4){
 	bzero(pass, sizeof(pass));
 	recv(sock , pass , 30 , 0);
 	formatter(pass);
+  puts(pass);
       if (strcmp(pass,Dados[user_code].password)==0) //confirma se a passwoard corresponde com o utilizador
       	break;
       ++n;
@@ -363,6 +365,7 @@ void *serveradminpanel(){
     				FILE *fx;
     				fx=fopen(FX,"w");
     				fclose(fx);
+            DBreader();
     				break;
     			}
     			else if (op[4]=='v'){

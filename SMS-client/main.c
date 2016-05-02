@@ -79,6 +79,7 @@ int main(int argc, char const *argv[])
 					scanf("%s",user);
 				}
 				bzero(message, sizeof(message));
+				//printf("messa %s  sdd\n",user );
 				write(sock, user , strlen(user));
 				recv(sock, message,sizeof(message), 0);//ver o maximo d eparammetros existemtes
 				i=commandrcv(message[0]); //vai traduzir a string para int
@@ -106,6 +107,7 @@ int main(int argc, char const *argv[])
 				}
 				message[i]='\0';
 				//scanf("%s", message);
+				printf("\n");
 				write(sock, message , strlen(message));
 				bzero(message, sizeof(message));
 				recv(sock, message,sizeof(message), 0);//ver o maximo d eparammetros existemtes
