@@ -42,18 +42,16 @@ void SMScreater(int sock){
 	write(sock,messagel,strlen(messagel));
 }
 
-void *SMSreceaver(void *socket_desc){
-	int sock = (int*)socket_desc;
-	//puts("fez o sock");
+void *MSreceaver(void *socket_desc){
+	int sock = *(int*)socket_desc;
 	char messagel[600]; 
 	char corpo[500];
 	char user[30];
 	int i, n=0,s, b=0;
+
 	while(1){
 	bzero(messagel,sizeof(messagel));
-	//puts("a espera de se ligar");
 	recv(sock,messagel,600,0);
-	//printf("%s entrou no sms receaver\n",messagel);
 	s=messagel[(strlen(messagel)-1)]-'0';
 
 	//puts(messagel[(strlen(messagel)-1)]);
@@ -63,19 +61,23 @@ void *SMSreceaver(void *socket_desc){
 			printf("%s",messagel);
 			mainprinter();
 			break;
+
 		case 2: //estado do envio da mensagem
 			puts("Mensagem enviada com sucesso.\n");
 			mainprinter();
 			break;
+
 		case 3://recepção de uma mensgaem offline
 			puts("Mensagem Offline");
 			messagel[(strlen(messagel)-1)]='\0';
 			printf("%s\n",messagel);
 			break;
+
 		case 4: //mensagem enviada sem sucesso
 			puts("Enviado sem sucesso.\n");
 			mainprinter();
 			break;
+
 		case 5: //mensagem enviada sem sucesso
 			puts("Password alterada com sucesso.\n");
 			mainprinter();
@@ -86,28 +88,31 @@ void *SMSreceaver(void *socket_desc){
 			close(sock);
 			exit(0);
 			break;
+
 		case 8: //recepção de mensagem normal
 			messagel[(strlen(messagel)-1)]='\0';//retirar o carater de controlo
-			for (i = 0; messagel[i]!=';'; ++i)
-			{
+			
+			for (i = 0; messagel[i]!=';'; ++i){//isolar o remtente
 				user[i]=messagel[i];
 			}
 
 			user[i]='\0';
 
-			for (++i; messagel[i]!='\0'; ++i)
-			{
+			for (++i; messagel[i]!='\0'; ++i){//isolar o corpo da mensagem
 				corpo[n]=messagel[i];
 				++n;
 			}
+
 			corpo[n]='\0';
+
 			n=0;
 			printf("\n");
 			printf("%s: ",user );
 			printf("%s\n",corpo );
 			mainprinter();
 			break;
-		case 9:
+
+		case 9: //log out do sistema
 			puts("Log out efetuado");
 			close(sock);
 			exit(0);
@@ -118,7 +123,7 @@ void *SMSreceaver(void *socket_desc){
 			close(sock);
 			exit(EXIT_FAILURE);
 			break;
-	}
+		}
 	}
 }
 
@@ -131,47 +136,39 @@ void passwordConfirm(char passf[]){
 	int i=0;
 	char pass1[30], pass2[30],v;
 	__fpurge(stdin);
+	
 	do{
-				//v=getchar();
-				if (i!=0)
-				{
-					i=0;
-					printf("As password's não correspondem volte a inserir.\n");
-				}
-				/*
-				printf("\nPassword antiga: ");
-				v=getchar();
-				while (v!='\n'&&i<29){
-					pass1[i]=v;
-					++i;
-					v=getchar();
-				}
-				pass1[i]='\0';
-				i=0;*/
+		if (i!=0){
+			i=0;
+			printf("As password's não correspondem volte a inserir.\n");
+		}
 
-				printf("\n Nova password: ");
-				v=getch();
-				while (v!='\n'&&i<29){
-					pass1[i]=v;
-					++i;
-					v=getch();
-				}
-				pass1[i]='\0';
-				printf("\n");
-				i=0;
-				printf("Reintroduza a password: ");
-				v=getch();
-				while (v!='\n'&&i<29){
-					pass2[i]=v;
-					++i;
-					v=getch();
-				}
-				pass2[i]='\0';
-				printf("\n");
-			}while(strcmp(pass1,pass2)!=0);
+		printf("\n Nova password: ");
 
-			strcpy(passf,pass1);
+		v=getch();
+		while (v!='\n'&&i<29){
+			pass1[i]=v;
+			++i;
+			v=getch();
+		}
 
+		pass1[i]='\0';
+		printf("\n");
+		i=0;
+
+		printf("Reintroduza a password: ");
+
+		v=getch();
+		while (v!='\n'&&i<29){
+			pass2[i]=v;
+			++i;
+			v=getch();
+		}
+		pass2[i]='\0';
+		printf("\n");
+
+	}while(strcmp(pass1,pass2)!=0);
+	strcpy(passf,pass1);
 }
 
 void passwoardChangerSend(int sock){

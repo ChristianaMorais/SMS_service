@@ -40,31 +40,26 @@ void startServer(){
     puts("A espera de ligação");
     puts("Digite -q para desligar em segurança o servidor.");
     c = sizeof(struct sockaddr_in); 
-    while( (client = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t*)&c)) )      {
-
+    while( (client = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t*)&c)) ){
     	pthread_t sniffer_thread;
     	newsock = malloc(4);
     	*newsock = client;
 
-    	if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*) newsock) < 0)
-    	{
+    	if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*) newsock) < 0){
     		perror("could not create thread");
     		exit(EXIT_FAILURE);
     	}
-
     }
 
-    if (client < 0)
-    {
+    if (client < 0){
     	perror("accept failed");
     	exit(EXIT_FAILURE);
     }
 }
 
 
-void *connection_handler(void *socket_desc)
-{
-    //Get the socket descriptor
+void *connection_handler(void *socket_desc) {
+  
 	int sock = *(int*)socket_desc, i,n=0;
 	int read_size;
 	int user_code=-1;
@@ -72,42 +67,41 @@ void *connection_handler(void *socket_desc)
   char message[1000] , client_message[2000], menuact[3];
   char login[30],pass[30];
 
-    /*Autenticação do nome do utilizador*/
-    //n contador de logins
-    while(n<=3){ //verificação de utilizador
+  /*Autenticação do nome do utilizador*/
+  //n contador de logins
+  while(n<=3){ //verificação de utilizador
+  	bzero(message, sizeof(message));
+  	recv(sock , login , 30 , 0);
+  	formatter(login);
+    user_code=findUser(login); //compara o nome dado com a base de dados
+    ++n;
+    if (user_code!=-1){
     	bzero(message, sizeof(message));
-    	recv(sock , login , 30 , 0);
-    	formatter(login);
-      user_code=findUser(login); //compara o nome dado com a base de dados
-      ++n;
-      if (user_code!=-1){
-      	bzero(message, sizeof(message));
-        strcat(message,"2");//codigo para dizer que o login foi aceite
-        write(sock , message , strlen(message));
-        break;
+      strcat(message,"2");//codigo para dizer que o login foi aceite
+      write(sock , message , strlen(message));
+      break;
+    }
+    else{
+  	   if (n==3){
+  		    bzero(message, sizeof(message));
+          strcat(message,"1"); //envio de codigo para desligar a ligação
+          write(sock , message , strlen(message));
+          puts("Ligação desligada, login sem sucesso.");
+          close(sock);
+          free(socket_desc);
+          return 0;
+       }
+       else{
+    	    bzero(message, sizeof(message));
+          strcat(message,"0"); //codigo para continuar o ciclo
+          write(sock , message , strlen(message));  
       }
-      else{
-    	   if (n==3){
-    		    bzero(message, sizeof(message));
-            strcat(message,"1"); //envio de codigo para desligar a ligação
-            write(sock , message , strlen(message));
-            puts("Ligação desligada, login sem sucesso.");
-            close(sock);
-            free(socket_desc);
-            return 0;
-         }
-         else{
-      	    bzero(message, sizeof(message));
-            strcat(message,"0"); //codigo para continuar o ciclo
-            write(sock , message , strlen(message));  
-        }
     }
   }
 
 
   /*Autenticação da passwoard*/
   n=0;//contador de tentaivas
-
   while(n<=3){
       bzero(pass, sizeof(pass));
       recv(sock , pass , 30 , 0);
@@ -137,7 +131,7 @@ void *connection_handler(void *socket_desc)
   socketSaver(user_code, sock);
   printf("* Utilizador %s  iniciou a sua sessão com sucesso.\n",Dados[user_code].login );
   offlineRECEIVER(sock,user_code);
-  //Identificaçao do que pretend eo utilizador
+  //Identificaçao do que pretende o utilizador
   while(n!=9){
     bzero(menuact, sizeof(menuact));
    	recv(sock ,menuact , 1 , 0);//fazer verificação de digitos
@@ -194,8 +188,7 @@ int smssender(int user_code,int socksender){
 
   if (userSend==-1)//verifica se existe o utilizador
   {
-    write(socksender,"4",30);//pode dar erro
-    return 1;
+    write(socksender,"4",30);
 	}
 
   //isolar a mensagem em si
@@ -204,22 +197,19 @@ int smssender(int user_code,int socksender){
 		++n;
 	}
 	corpo[n]='\0';
+
   //escolha do metodo de envio
-  //argumentos[0]='\0'; //reenicia a string 
-	bzero(argumentos,sizeof(argumentos));
-  if (Dados[userSend].sock!=-1)//online
-  {
-  	strcat(argumentos,Dados[user_code].login);
+  bzero(argumentos,sizeof(argumentos));
+  if (Dados[userSend].sock!=-1){//online
+   	strcat(argumentos,Dados[user_code].login);
   	strcat(argumentos,";");
   	strcat(argumentos,corpo);
   	strcat(argumentos,"8");
   	strcat(argumentos,"\0");
   	write(Dados[userSend].sock,argumentos,strlen(argumentos));
   }
-  else
-  {
-    offlineSMS(user_code,userSend,corpo); //temporario em breve criar o serviço de sms offline
-    //return;
+  else {
+    offlineSMS(user_code,userSend,corpo);     
 	}
 	write(socksender,"2",30);
 	printf("-> %s mandou uma mensagem a %s\n",Dados[user_code].login, Dados[userSend].login);
@@ -232,37 +222,31 @@ void globalSMS(){
 	int i=6;
 	strcat(message,"admin;");
 	printf("Mensgaem global: ");
+
 	v=getchar();
 	while(v!='\n' && i<592){
 		message[i]=v;
 		++i;
 		v=getchar();
 	}
-	//strcat(message,";8");
+	
 	__fpurge(stdin);
-	//message[i]=';';
-	//++i;
 	message[i]='8';
 	++i;
 	message[i]='\0';
-	for (i = 0; i < UserNumber(); ++i)
-	{
-		if (Dados[i].sock!=-1)
-		{
+	for (i = 0; i < UserNumber(); ++i){
+		if (Dados[i].sock!=-1){
 			write(Dados[i].sock , message , strlen(message));
 		}
 	}
 	puts("->Mensagem global enviada.");
-
-
 }
 
 void *serveradminpanel(){
 	char op[50], user[60], decisao,v,pass1[30],pass2[30];
 	int i, b, codeuser, flag=0,p=0;
 	while(1){
-   // scanf("%s",op);
-		i=0;
+  	i=0;
 		bzero(op,sizeof(op));
 		v=getchar();
 		while(v!='\n'&&i<48){
@@ -271,8 +255,9 @@ void *serveradminpanel(){
 			v=getchar();
 		}
 		op[i]='\0';
-		__fpurge(stdin); //limpar o buffer metdo especifico para c em linux
-		if(op[0]=='-'){
+		__fpurge(stdin); //limpar o buffer metodo especifico para c em linux
+		
+    if(op[0]=='-'){
     	switch(op[1]){
     		case 'p'://alterar a passwoard
     			i=3;
@@ -284,7 +269,6 @@ void *serveradminpanel(){
     						++b;
     			}
     			user[b]='\0';
-    			//puts(user);
     			codeuser=findUser(user);
     			if (codeuser!=-1){
     				i=0;
@@ -297,47 +281,42 @@ void *serveradminpanel(){
     			break;
 
     		case 'q':
-    		printf("!!!!!\nTem a certeza que pretende terminar o servidor?\nEstão neste momento %d utilizadores online...\nConfirme por favor (s/n) ? ", onlineuserscounter());
-    		//decisao=getchar();
-    		if (!(confirma()))
-    		{
-    			puts("!!!!! A enviar mensagem de terminação a todos os utilizadores");
-    			for (i = 0; i <UserNumber(); ++i)
-    			{
-    				if (Dados[i].sock!=-1)
-    					write(Dados[i].sock,"7",2);
-    			}
-    			puts("!!!!! Servidor terminado !!!!!\n\n");
-    			exit(0);
-    		}
-    		break;
+    		  printf("!!!!!\nTem a certeza que pretende terminar o servidor?\nEstão neste momento %d utilizadores online...\nConfirme por favor (s/n) ? ", onlineuserscounter());
+    			if (!(confirma())){
+            puts("!!!!! A enviar mensagem de terminação a todos os utilizadores");
+            for (i = 0; i <UserNumber(); ++i){
+    				  if (Dados[i].sock!=-1)
+                write(Dados[i].sock,"7",2);
+            }
+          puts("!!!!! Servidor terminado !!!!!\n\n");
+          exit(0);
+    		  }
+    		  break;
+
     		case 'h':
     		  printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -m : Enviar mensagem global;\n -p [Utilizador] : mudar a passwoard de um utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -:[port] : altera a porta do servdior;\n -q : desliga o servidor;\n");
-    		break;
+    		  break;
 
         case ':':
           i=2;
           b=0;
-          //printf("%s\n",op );
           bzero(user,sizeof(user));
           while(op[i]!='\0'){
             if (isdigit(op[i])==0){
               puts("Porta inválida!");
               break;
             }
-             //printf("%d ",b );
-            b=b*10+(op[i]-'0');
+            b=b*10+(op[i]-'0');//converte string para int
             ++i;
           }
-          //printf("%d\n",b );
-          portChanger(b);
+          portChanger(b);//muda a porta no ficheiro d econfigurações
           printf("A porta do servidor foi alterada para a porta %d.\nPara que as alterações façam efeito reinicie o servidor.\n",b);
+          break;
 
-        break;
         case 'm':
-			globalSMS();   	
+          globalSMS();   	
+          break;
 
-        break;
     		case 'a':
     			printf("Novo utilizador: ");
     			scanf("%s",user);
@@ -347,95 +326,86 @@ void *serveradminpanel(){
     		break;
 
     		case 'r':
-    		i=3;
-    		if (op[3]=='-')
-    		{
-    			if (op[4]=='a')
-    			{
-    				FILE *fx;
-    				fx=fopen(FX,"w");
-    				fclose(fx);
-            DBreader();
-    				break;
-    			}
-    			else if (op[4]=='v'){
-    				flag=1;
-    				i=6;
-    				//puts("detetou v");
-    			}
-    			else
-    				continue;
-    		}
-    		//else{
-    				//puts("inicio bzero");
-    				bzero(user,sizeof(user));
-    				b=0;
-    				while(op[i]!='\0'){
-    					if (op[i]!=' ')
-    					{
-    						user[b]=op[i];
-    						++b;
-    						++i;
-    					}
-    					if(op[i]==' '||op[i]=='\0'){
-    						//printf("%d\n", flag);
-    						user[b]!='\0';
-    						if (flag)
-    						{
-    							printf("Deseja mesmo eliminar o utilizador %s?(s/n)",user);
-    							if(confirma())
-    								break;
-    							printf("\n");
-    						}
-    						codeuser=findUser(user);
-    						if (codeuser!=-1)
-    						{
-    							FILE *fp = fopen(FX, "a+");
-    							FILE *fpc= fopen(FOC,"w");
-    							while(fgets(user,60,fp)){
-    								if (codeuser!=p){
-    									fputs(user,fpc);
-    									//puts(user);
-    								}  
-    								++p;
-    							}
-    							fclose(fp);
-    							fclose(fpc);
-    							remove(FX);
-    							rename(FOC,FX);
-    							DBreader(); //podera conter outros nomes 
-    							puts("Utilizador eliminado.");
-    							++i;
-    							b=0;
-    							p=0;
-    						}
-    						else
-    							puts("Utilizador inexistente.");
-    										
-    					}                
+    		  i=3;
+    		  if (op[3]=='-'){
+            if (op[4]=='a'){
+              FILE *fx;
+              fx=fopen(FX,"w");
+              fclose(fx);
+              DBreader();
+              break;
+            }
+            else if (op[4]=='v'){
+    				  flag=1;
+    				  i=6;
     				}
-    				//printf("\n cara ter %c\n",op[i-1]);
-    				flag=0;
+    			 else
+    				continue; //que e eu isti faz???? nao me lembro
+          }
+    		
+  				bzero(user,sizeof(user));
+  				b=0;
+
+  				while(op[i]!='\0'){
+  					if (op[i]!=' '){
+  						user[b]=op[i];
+  						++b;
+  						++i;
+  					}
+  					if(op[i]==' '||op[i]=='\0'){
+  						user[b]!='\0';
+
+              codeuser=findUser(user);//procura o codigo do utilizador
+              if (codeuser!=-1){
+  						  if (flag){ //se o modo verboso estiver ativado existe uma rconfirmaçao antes d eeliminar o utilizador
+  						  	printf("Deseja mesmo eliminar o utilizador %s?(s/n)",user);
+  						  	if(confirma())//simples função que gere um sim ou um não
+  						  		break;
+  						  	printf("\n");
+  						  }
+				
+                p=0;// ira servir como o contador que nos permitira saber em que utilizador vamos (codigo do utilizador)
+  							FILE *fp = fopen(FX, "a+");
+  							FILE *fpc= fopen(FOC,"w");
+  							while(fgets(user,60,fp)){
+  								if (codeuser!=p){
+  									fputs(user,fpc);
+  								}  
+  								++p;
+  							}
+  							fclose(fp);
+  							fclose(fpc);
+  							remove(FX);
+  							rename(FOC,FX);
+  							DBreader();  
+  							puts("Utilizador eliminado.");
+  							++i;
+  							b=0;  							
+  						}
+  						else
+  							puts("Utilizador inexistente.");
+  										
+  					}                
+  				}
+  				flag=0;
     			printf("\n");
     			break;
 
-    			default:
-          	printf("Opção não reconhecida.\n");
+    		default:
+          printf("Opção não reconhecida.\n");
     			break;
-    		//}
-    	}
-
-    }else
-    		puts("As opções devem começar com - ex: -h");
+     	}
     }
+    else
+    		puts("As opções devem começar com - ex: -h");
+  }
 }
 
-int confirma(){
+int confirma(){ //esta função linda com inputs do tipo sim e nao
 	char c;
 	c=getchar();
 	__fpurge(stdin);
-	if (c=='s')
-	{
+	if (c=='s'){
 		return 0;
 	}
 	else

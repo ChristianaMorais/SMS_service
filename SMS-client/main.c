@@ -31,20 +31,17 @@ int main(int argc, char const *argv[])
 		ipserver[n]='\0';
 		
 		//porta
-		for (++i; argv[1][i] != '\0'; ++i)
-		{
+		for (++i; argv[1][i] != '\0'; ++i){
 			if (isdigit(argv[1][i])==0){
 				perror("Porta inválida.");
 				exit(EXIT_FAILURE);
 			}
 			port=port*10+(argv[1][i]-'0');
-
 		}
 
 		//Criação da socket
 		sock=socket(AF_INET, SOCK_STREAM, 0);
-		if (sock==-1)
-		{
+		if (sock==-1){
 			perror("A criação da socket falhou.");
 			exit(EXIT_FAILURE);
 		}
@@ -55,8 +52,7 @@ int main(int argc, char const *argv[])
 		server.sin_port = htons( port );//port
 
 		//ligação ao servidor
-		if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
-		{
+		if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0){
 			perror("A conexão falhou.");
 			exit(EXIT_FAILURE);
 		}else
@@ -71,20 +67,21 @@ int main(int argc, char const *argv[])
 				scanf("%s",user);
 			}
 			bzero(message, sizeof(message));
-			//printf("messa %s  sdd\n",user );
 			write(sock, user , strlen(user));
 			recv(sock, message,sizeof(message), 0);//ver o maximo d eparammetros existemtes
 			i=commandrcv(message[0]); //vai traduzir a string para int
 		}while(i!=1 && i!=2);
 
-		if (i==1)
-		{
+
+		if (i==1){
 			perror("Atingiu o limite de logins.");
 			exit(EXIT_FAILURE);
 		}
+
 		/*Metodo para as passwoard's */
 		i=-1;
 		__fpurge(stdin);
+
 		do{
 			bzero(message, sizeof(message));
 			if (i!=-1)
@@ -92,41 +89,39 @@ int main(int argc, char const *argv[])
 
 			printf("Passwoard: "); //falta desligar o echo da password
 			i=0;
-			c=getch();
+
+			c=getch();//input da passwoard
 			while(c!='\n'){
 				message[i]=c;
 				++i;
 				c=getch();
 			}
 			message[i]='\0';
-			//scanf("%s", message);
+			
 			printf("\n");
 			write(sock, message , strlen(message));
 			bzero(message, sizeof(message));
 			recv(sock, message,sizeof(message), 0);//ver o maximo d eparammetros existemtes
-			//printf("%s codigo \n",message);
 			i=commandrcv(message[0]);
 		}while(i!=1 && i!=2);
 
 		fflush(stdout);
-		if (i==1)
-		{
+		if (i==1){
 			perror("\nAtingiu o limite de tentativas para a passwoard.");
 			exit(EXIT_FAILURE);
 		}
-		//puts("entrada");
-		//criação da thread
+		
 		pthread_t sniffer_thread;
 		newsock = malloc(4);
       	*newsock = sock;
                
-      if( pthread_create( &sniffer_thread , NULL ,  SMSreceaver ,(void*) sock) < 0)
-      {
+      	if( pthread_create( &sniffer_thread , NULL ,  SMSreceaver ,(void*) sock) < 0){
           perror("Não conseguiu criar a thread");
           exit(EXIT_FAILURE);
-      }
-      printf("\nUtilizador %s autenticado. Pode começar a usar o sistema!\n",user);
-      mainprinter();
+      	}
+
+      	printf("\nUtilizador %s autenticado. Pode começar a usar o sistema!\n",user);
+      	mainprinter();
 		while(1){
 			scanf("%d",&i);
 			bzero(message, sizeof(message));
@@ -141,7 +136,7 @@ int main(int argc, char const *argv[])
 				case 3: //terminar programa
 					write(sock,"9",1);
 					break;
-				case 4:
+				case 4:	//alterar a passwoard
 					write(sock,"4",1);
 					__fpurge(stdin);
 					passwoardChangerSend(sock);
