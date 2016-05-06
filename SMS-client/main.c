@@ -63,7 +63,6 @@ int main(int argc, char const *argv[])
 		puts(" A conexão ao servidor foi efetuada com sucesso.");
 		
 		i=-1; //incicar estado serve para nao mostar indicaçoes de login na primeira tentativa e serve de tbm para receber as mesangens do servidor
-		//recv(sock, message,sizeof(message), 0); //recebe a mensagem de controlo do servidor, dando origem a correspondecia de user
 		
 		do{
 			if (i!=-1){

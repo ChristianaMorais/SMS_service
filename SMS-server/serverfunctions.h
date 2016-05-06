@@ -72,11 +72,8 @@ void *connection_handler(void *socket_desc)
   char message[1000] , client_message[2000], menuact[3];
   char login[30],pass[30];
 
-  strcat(message,"1");
-    write(sock , message , strlen(message));//o envio desta tem como objetivo sincronizar os dois servidores permitindo que as comunicações nao falhem
-
     /*Autenticação do nome do utilizador*/
-    //n contador d elogins
+    //n contador de logins
     while(n<=3){ //verificação de utilizador
     	bzero(message, sizeof(message));
     	recv(sock , login , 30 , 0);
