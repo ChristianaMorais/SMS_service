@@ -76,69 +76,61 @@ void *connection_handler(void *socket_desc)
     write(sock , message , strlen(message));//o envio desta tem como objetivo sincronizar os dois servidores permitindo que as comunicações nao falhem
 
     /*Autenticação do nome do utilizador*/
-    while(1){ //verificação de utilizador
+    //n contador d elogins
+    while(n<=3){ //verificação de utilizador
     	bzero(message, sizeof(message));
     	recv(sock , login , 30 , 0);
     	formatter(login);
-      //puts(login);
-      //printf("%s \n",login);
       user_code=findUser(login); //compara o nome dado com a base de dados
       ++n;
-      if (user_code!=-1)
-      {
-      	n=0;
+      if (user_code!=-1){
       	bzero(message, sizeof(message));
         strcat(message,"2");//codigo para dizer que o login foi aceite
         write(sock , message , strlen(message));
         break;
+      }
+      else{
+    	   if (n==3){
+    		    bzero(message, sizeof(message));
+            strcat(message,"1"); //envio de codigo para desligar a ligação
+            write(sock , message , strlen(message));
+            puts("Ligação desligada, login sem sucesso.");
+            close(sock);
+            free(socket_desc);
+            return 0;
+         }
+         else{
+      	    bzero(message, sizeof(message));
+            strcat(message,"0"); //codigo para continuar o ciclo
+            write(sock , message , strlen(message));  
+        }
     }
-    else{
-    	if (n==3){
-    		bzero(message, sizeof(message));
-          strcat(message,"1"); //envio de codigo para desligar a ligação
-          write(sock , message , strlen(message));
-          puts("Ligação desligada, login sem sucesso.");
-          close(sock);
-          free(socket_desc);
-          return 0;
-      }
-      else
-      {
-      	bzero(message, sizeof(message));
-          strcat(message,"0"); //codigo para continuar o ciclo
-          write(sock , message , strlen(message));  
-
-      }
   }
-}
 
-n=1;
 
-    /*Autenticação da passwoard*/
-while(n!=0 && n <4){ 
-	bzero(pass, sizeof(pass));
-	recv(sock , pass , 30 , 0);
-	formatter(pass);
-  //puts(pass);
+  /*Autenticação da passwoard*/
+  n=0;//contador de tentaivas
+
+  while(n<=3){
+      bzero(pass, sizeof(pass));
+      recv(sock , pass , 30 , 0);
+      formatter(pass);
       if (strcmp(pass,Dados[user_code].password)==0) //confirma se a passwoard corresponde com o utilizador
       	break;
       ++n;
 
-       if (n==4)//significa que exedeu  as tentativas permitidas
-       {
-       	bzero(message, sizeof(message));
-       	strcat(message,"1");
-       	write(sock , message , strlen(message));
-       	puts("Ligação desligada, login sem sucesso.");
-      //close(sock);
-       	free(socket_desc);
-       	return 0;
+       if (n==3){//significa que exedeu  as tentativas permitidas
+         	bzero(message, sizeof(message));
+       	  strcat(message,"1");
+       	  write(sock , message , strlen(message));
+       	  puts("Ligação desligada, login sem sucesso.");
+         	free(socket_desc);
+       	  return 0;
        }
-       else
-       {
-       	bzero(message, sizeof(message));
-        strcat(message,"0");//indica que nao acertou e que o ciclo vai continuar
-        write(sock , message , strlen(message));
+       else{
+       	  bzero(message, sizeof(message));
+          strcat(message,"0");//indica que nao acertou e que o ciclo vai continuar
+          write(sock , message , strlen(message));
     }
 }
 

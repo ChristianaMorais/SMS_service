@@ -92,6 +92,7 @@ int main(int argc, char const *argv[])
 			}
 			/*Metodo para as passwoard's */
 			i=-1;
+			__fpurge(stdin);
 			do{
 				bzero(message, sizeof(message));
 				if (i!=-1)
