@@ -118,8 +118,7 @@ void *connection_handler(void *socket_desc)
       if (strcmp(pass,Dados[user_code].password)==0) //confirma se a passwoard corresponde com o utilizador
       	break;
       ++n;
-
-       if (n==3){//significa que exedeu  as tentativas permitidas
+      if (n==3){//significa que exedeu  as tentativas permitidas
          	bzero(message, sizeof(message));
        	  strcat(message,"1");
        	  write(sock , message , strlen(message));
@@ -132,50 +131,50 @@ void *connection_handler(void *socket_desc)
           strcat(message,"0");//indica que nao acertou e que o ciclo vai continuar
           write(sock , message , strlen(message));
     }
-}
+  }
 
 
-bzero(message, sizeof(message));
-strcat(message,"2");
-    write(sock , message , strlen(message)); //envia o codigo que a passoward foi aceite
-    socketSaver(user_code, sock);
-    printf("* Utilizador %s  iniciou a sua sessão com sucesso.\n",Dados[user_code].login );
-    offlineRECEIVER(sock,user_code);
-    while(n!=9){
-    	bzero(menuact, sizeof(menuact));
-   		recv(sock ,menuact , 1 , 0);//fazer verificação de digitos
-   		n=menuact[0]-'0';
+  bzero(message, sizeof(message));
+  strcat(message,"2");
+  write(sock , message , strlen(message)); //envia o codigo que a passoward foi aceite
+  socketSaver(user_code, sock);
+  printf("* Utilizador %s  iniciou a sua sessão com sucesso.\n",Dados[user_code].login );
+  offlineRECEIVER(sock,user_code);
+  //Identificaçao do que pretend eo utilizador
+  while(n!=9){
+    bzero(menuact, sizeof(menuact));
+   	recv(sock ,menuact , 1 , 0);//fazer verificação de digitos
+   	n=menuact[0]-'0';
    		switch(n){
    			case 1:
-   			onlineusers(sock);
-   			break;
+   			  onlineusers(sock);
+          coderr=0;
+   			  break;
    			case 2:
-   			i=smssender(user_code,sock);
-   			break;
-   			case 3:
+   			  i=smssender(user_code,sock);
+          coderr=0;
+   			  break;
+   			/*case 3:
         	printf("%s ficou offline.\n",Dados[user_code].login ); //ver que caso e e este 3
-        	break;
-        	case 9:
-        	break;
-
+          break;*/
+        case 9:
+        	break;//o 9 como n ira parar o ciclo
         case 4:
         	remoteChanger(user_code,sock);
-        	break;
-        	default:
-        	if (coderr>=3)
-        	{
-        		n=9;
+          coderr=0;
+        break;
+
+        default:
+        	if (coderr>=3){//o o utilizador pode dar ate 3 comunicaçoes desconhecidas seguidas , doutra forma o programa fecha automaticamente
+            n=9;
         	}
         	else{
         		perror("Erro na comunicação.");
         		++coderr;
         	}
         	break; // assim so vai desligar esta socket
-
         }
-
     }
-
     socketSaver(user_code, -1);
     logLogoff(user_code);
     printf("# %s fez logout\n",Dados[user_code].login );
