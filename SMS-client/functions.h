@@ -43,7 +43,7 @@ void SMScreater(int sock){
 }
 
 void *MSreceaver(void *socket_desc){
-	int sock = *(int*)socket_desc;
+	int sock = (int*)socket_desc;
 	char messagel[600]; 
 	char corpo[500];
 	char user[30];

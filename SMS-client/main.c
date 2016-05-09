@@ -115,7 +115,7 @@ int main(int argc, char const *argv[])
 		newsock = malloc(4);
       	*newsock = sock;
                
-      	if( pthread_create( &sniffer_thread , NULL ,  SMSreceaver ,(void*) sock) < 0){
+      	if( pthread_create( &sniffer_thread , NULL ,  MSreceaver ,(void*) sock) < 0){
           perror("Não conseguiu criar a thread");
           exit(EXIT_FAILURE);
       	}
