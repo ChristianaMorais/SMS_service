@@ -6,6 +6,6 @@
 #include "arpa/inet.h" //inet_addr
 #include "ctype.h"
 #include "passinput.h"
-
+#include "stdio_ext.h"
 //files
 #include "functions.h"
