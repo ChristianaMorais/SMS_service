@@ -5,8 +5,8 @@ int smssender (int user_code,int socksender);
 void *serveradminpanel();
 int confirma();
 void startServer(){
-	int sockfd, *newsock , client, c;
-	struct sockaddr_in serv_addr, cli_addr;//estrutura para guardar os edereços de ip do servidor e cliente
+int sockfd, *newsock , client, c;
+struct sockaddr_in serv_addr, cli_addr;//estrutura para guardar os edereços de ip do servidor e cliente
 
 	// iniciar socket
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -219,6 +219,7 @@ int smssender(int user_code,int socksender){
 void globalSMS(){
 	__fpurge(stdin);
 	char message[600], v;
+  bzero(message,sizeof(message));
 	int i=6;
 	strcat(message,"admin;");
 	printf("Mensgaem global: ");
@@ -234,8 +235,10 @@ void globalSMS(){
 	message[i]='8';
 	++i;
 	message[i]='\0';
+  puts(message);
 	for (i = 0; i < UserNumber(); ++i){
 		if (Dados[i].sock!=-1){
+      //puts(Dados[i].login);
 			write(Dados[i].sock , message , strlen(message));
 		}
 	}
