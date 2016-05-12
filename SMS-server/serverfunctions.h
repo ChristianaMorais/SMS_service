@@ -177,43 +177,68 @@ void *connection_handler(void *socket_desc) {
 }
 
 int smssender(int user_code,int socksender){
-  char argumentos[600],user[30],corpo[500]; //user e aquele que queremos enviar
-  int n=0, i=0, userSend;
+  char argumentos[600],user[30],corpo[500], final[100], send[600]; //user e aquele que queremos enviar
+  int n=0, i=0, userSend,p=0, firstcomma;
   bzero(argumentos,sizeof(argumentos));
+  bzero(final,sizeof(final));
   recv(socksender,argumentos,1024,0);
-  for (i = 0; argumentos[i] != ';'; ++i) //isola o utilizador de quem veio
-  	user[i]=argumentos[i];
-  user[i]='\0';
-  userSend=findUser(user);
 
-  if (userSend==-1)//verifica se existe o utilizador
-  {
-    write(socksender,"4",30);
-	}
+  for (i = 0; argumentos[i]!=';'; ++i);
+  firstcomma=i;
 
-  //isolar a mensagem em si
-	for (++i; argumentos[i] != '\0'; ++i){
-		corpo[n]=argumentos[i];
-		++n;
-	}
-	corpo[n]='\0';
-
-  //escolha do metodo de envio
-  bzero(argumentos,sizeof(argumentos));
-  if (Dados[userSend].sock!=-1){//online
-   	strcat(argumentos,Dados[user_code].login);
-  	strcat(argumentos,";");
-  	strcat(argumentos,corpo);
-  	strcat(argumentos,"8");
-  	strcat(argumentos,"\0");
-  	write(Dados[userSend].sock,argumentos,strlen(argumentos));
+  for ( ++i  ; argumentos[i] != '\0' ; ++i){//isolar a mensagem em si
+    corpo[n]=argumentos[i];
+    ++n;
   }
-  else {
-    offlineSMS(user_code,userSend,corpo);     
-	}
-	write(socksender,"2",30);
-	printf("-> %s mandou uma mensagem a %s\n",Dados[user_code].login, Dados[userSend].login);
-	return 0;
+  corpo[n]='\0';
+  i=0;
+  /*Isola os utilizadores */
+  do{
+    if (argumentos[i] == ',' || argumentos[i] == ';'){
+      user[p]='\0';
+
+    if (strcmp(user,"admin") == 0){
+      printf("---Nova mensagem para administrador de %s---\n%s\n\n",Dados[user_code].login,corpo);
+      ++i;
+      p=0;
+      if (strlen(final)!=0)
+        strcat(final,", ");
+      strcat(final,"admin");
+      continue;
+    }
+
+    userSend=findUser(user);
+    if (userSend==-1){//verifica se existe o utilizador
+      write(socksender,"4",30);
+    }
+    //escolha do metodo de envio
+    bzero(send,sizeof(send));
+    if (Dados[userSend].sock!=-1){//online
+      strcat(send,Dados[user_code].login);
+      strcat(send,";");
+      strcat(send,corpo);
+      strcat(send,"8");
+      strcat(send,"\0");
+      write(Dados[userSend].sock,send,strlen(send));
+    }
+    else {
+      offlineSMS(user_code,userSend,corpo);     
+    }
+    p=0;
+    if (strlen(final)!=0)
+      strcat(final,", ");
+    strcat(final,Dados[userSend].login);
+  }
+  else{
+    user[p]=argumentos[i];
+    ++p;
+  }
+    ++i;
+  }while(i<=firstcomma);
+
+  write(socksender,"2",30);
+  printf("-> %s mandou uma mensagem para %s\n",Dados[user_code].login, final);
+  return 0;
 }
 
 void globalSMS(){
@@ -293,7 +318,8 @@ void *serveradminpanel(){
             }
           puts("!!!!! Servidor terminado !!!!!\n\n");
           exit(0);
-    		  }
+    		  }else
+            puts("Cancelado!");
     		  break;
 
     		case 'h':
@@ -311,6 +337,10 @@ void *serveradminpanel(){
             }
             b=b*10+(op[i]-'0');//converte string para int
             ++i;
+          }
+          if (b < 1 || b > 65536){ // As porta so podem ser de 1 a 65536
+            puts("Porta inválida!");
+            break;
           }
           portChanger(b);//muda a porta no ficheiro d econfigurações
           printf("A porta do servidor foi alterada para a porta %d.\nPara que as alterações façam efeito reinicie o servidor.\n",b);
