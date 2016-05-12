@@ -198,7 +198,7 @@ int smssender(int user_code,int socksender){
       user[p]='\0';
 
     if (strcmp(user,"admin") == 0){
-      printf("---Nova mensagem para administrador de %s---\n%s\n\n",Dados[user_code].login,corpo);
+      printf("\n---Nova mensagem para administrador de %s---\n%s\n\n",Dados[user_code].login,corpo);
       ++i;
       p=0;
       if (strlen(final)!=0)

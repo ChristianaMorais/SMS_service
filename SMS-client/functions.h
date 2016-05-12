@@ -4,6 +4,14 @@
 #include "sys/socket.h"
 //#define KMAG  "\x1B[35m"
 
+int charpermited(char c){
+	//a funçao retorna 1 se o carater nao for permitido isto pode ativar um ciclo
+	switch (c){
+		case ';':puts("Carater não permitido!");return 1;break;
+		case ' ':puts("Carater não permitido!");return 1; break;
+		default:return 0; break;
+	}
+}
 int commandrcv(char messagel){
 	if (isdigit(messagel)==0)
 	{
@@ -20,12 +28,26 @@ void SMScreater(int sock){
 	char corpo[500];
 	char c;
 	int i=0;
-	char user[30],messagel[600];
+	char user[70],messagel[600];
 	printf("Para: ");
-	scanf("%s",user);
-	//printf("\n");
+	c=getchar();
+	while(c!='\n'&&i<70){
+		if (c!=' '){
+			/*if (charpermited(c)==1){ //problemas  aqui
+				puts("Vai fechar o programa");
+				__fpurge(stdin);
+				return;
+			}*/
+			user[i]=c;
+			++i;			
+		}
+		c=getchar();
+	}
+	user[i]='\0';
+
 	printf("Mensagem: ");
-	c=getchar(); // paara absorver o enter que anda por ai perdido
+	i=0;
+	
 	c=getchar();
 	while(c != '\n' && i < 500){
 		corpo[i]=c;
@@ -34,12 +56,14 @@ void SMScreater(int sock){
 	}
 	corpo[i]='\0';
 	printf("\n");
+	//if (strlen(corpo)!=0){
 	bzero(messagel,sizeof(messagel));
 	strcat(messagel,user);
 	strcat(messagel,";");
 	strcat(messagel, corpo);
 	strcat(messagel,"\0");
 	write(sock,messagel,strlen(messagel));
+	//}
 }
 
 void *MSreceaver(void *socket_desc){

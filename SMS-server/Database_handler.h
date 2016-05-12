@@ -9,6 +9,7 @@
 #define FON "online" //utilizadores online
 
 int findUser(char login[]);
+int charpermited(char c);
 
 typedef struct { //definição do novo tipo utilizador
 	char login[30];
@@ -95,9 +96,16 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 	if (strlen(arg)>29){//medida de segurança
 		perror("Nome de utilizador com carateres a mais!");
 	}
+
+	for (i = 0; arg[i]!='\0'; ++i){
+		if (charpermited(arg[i])){
+			puts("Nome inválido!");
+			return;
+		}
+	}
+	//puts(arg);
 	i=findUser(arg);
-	if (i!=-1)
-	{
+	if (i!=-1){
 		puts("Nome de utilizador já existente.");
 		return;
 	}
@@ -166,8 +174,8 @@ int findUser(char login[]){ //na base de dados procura se existe um utilizador c
 	int i;
 	//printf("%s ff\n",login );
 	for (i = 0; i < UserNumber(); ++i)	{
+		//printf("%s\n",Dados[i].login);
 		if (strcmp(login,Dados[i].login)==0)	{
-			//printf("%s\n",Dados[i].login);
 			return i;
 		}
 	}
@@ -181,10 +189,8 @@ void logcreator(int code, int socket){
 	bzero(buffer,sizeof(buffer));
 	bzero(aux,sizeof(aux));
 	snprintf(buffer, 60,"%d",code);
-	//itoa(code,buffer,10);//conversao  int para string
 	strcat(buffer,";");
 	snprintf(aux, 50,"%d",socket);
-	//itoa(socket,aux,10);//outra conversão
 	strcat(buffer,aux);
 	strcat(buffer,";\n");
 	fputs(buffer,fp);
@@ -388,4 +394,13 @@ void portChanger(int port){
 	fclose(fpc);
 	remove(FC);
 	rename(FOC,FC);
+}
+
+int charpermited(char c){
+	//a funçao retorna 1 se o carater nao for permitido isto pode ativar um ciclo
+	switch (c){
+		case ';':puts("Carater não permitido!");return 1;break;
+		case ' ':puts("Carater não permitido!");return 1; break;
+		default:return 0; break;
+	}
 }

@@ -9,7 +9,8 @@ int main(int argc, char const *argv[])
 {
 	if (argc==2)
 	{
-		//bzero(message, sizeof(message));
+		system("clear");
+		puts("***Bem vindo ao SMS_service***");
 		
 		int sock;
 		struct sockaddr_in server;
@@ -22,7 +23,7 @@ int main(int argc, char const *argv[])
 			user[i]=argv[1][i];
 		}
 		user[i]='\0';
-
+		printf("Tentativa de autenticação com %s.\n",user);
 		//ip
 		for (++i; argv[1][i] != ':'; ++i){//separa o ip
 			ipserver[n]=argv[1][i];
@@ -123,27 +124,28 @@ int main(int argc, char const *argv[])
       	printf("\nUtilizador %s autenticado. Pode começar a usar o sistema!\n",user);
       	mainprinter();
 		while(1){
-			scanf("%d",&i);
+			scanf("%c",&c);
+			__fpurge(stdin);//não queremos os enter ou quaisquer outros carateres
 			bzero(message, sizeof(message));
-			switch(i){
-				case 1: //listar online
+			switch(c){
+				case '1': //listar online
 					write(sock,"1",1);
 					break;
-				case 2://enviar sms
+				case '2'://enviar sms
 					write(sock,"2",1);
 					SMScreater(sock);
 					break;
-				case 3: //terminar programa
+				case '3': //terminar programa
 					write(sock,"9",1);
 					break;
-				case 4:	//alterar a passwoard
+				case '4':	//alterar a passwoard
 					write(sock,"4",1);
 					__fpurge(stdin);
 					passwoardChangerSend(sock);
 					break;
 				default:
-					puts("Opção inválida.");
-			}
+					puts("\nOpção inválida.\n");
+			}			
 		}
 	}
 	else{
