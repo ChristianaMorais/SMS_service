@@ -241,14 +241,20 @@ int smssender(int user_code,int socksender){
   return 0;
 }
 
-void globalSMS(){
+void globalSMS(int n){
 	__fpurge(stdin);
 	char message[600], v;
+  char user[60];
   bzero(message,sizeof(message));
 	int i=6;
+  if (n==0)
+  {
+    printf("Para: ");
+    scanf("%s",user);
+  }
+  __fpurge(stdin);
 	strcat(message,"admin;");
-	printf("Mensgaem global: ");
-
+	printf("Mensagem: ");
 	v=getchar();
 	while(v!='\n' && i<592){
 		message[i]=v;
@@ -260,7 +266,13 @@ void globalSMS(){
 	message[i]='8';
 	++i;
 	message[i]='\0';
-  puts(message);
+  //puts(message);
+  if (n==0){
+    i=findUser(user);
+    write(Dados[i].sock , message , strlen(message));
+    puts("Mensagem enviada com sucesso.");
+  }
+  else{
 	for (i = 0; i < UserNumber(); ++i){
 		if (Dados[i].sock!=-1){
       //puts(Dados[i].login);
@@ -268,6 +280,7 @@ void globalSMS(){
 		}
 	}
 	puts("->Mensagem global enviada.");
+}
 }
 
 void *serveradminpanel(){
@@ -323,7 +336,7 @@ void *serveradminpanel(){
     		  break;
 
     		case 'h':
-    		  printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -m : Enviar mensagem global;\n -p [Utilizador] : mudar a passwoard de um utilizador;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -:[port] : altera a porta do servdior;\n -q : desliga o servidor;\n");
+    		  printf("Manual de opções da consola do servidor:\n -a : adicionar um novo utilizador;\n -m : Enviar mensagem global;\n -p [Utilizador] : mudar a passwoard de um utilizador;\n -s :mandar sms;\n -h : mostra a ajuda à consola;\n -r: eliminar utilizador ou lista de utilizadores;\n     -a: opção que apaga todos os utilizadores;\n     -v: apagar de forma verbal;\n -:[port] : altera a porta do servdior;\n -q : desliga o servidor;\n");
     		  break;
 
         case ':':
@@ -346,8 +359,11 @@ void *serveradminpanel(){
           printf("A porta do servidor foi alterada para a porta %d.\nPara que as alterações façam efeito reinicie o servidor.\n",b);
           break;
 
+        case 's':
+          globalSMS(0); 
+          break;
         case 'm':
-          globalSMS();   	
+          globalSMS(1);   	
           break;
 
     		case 'a':
