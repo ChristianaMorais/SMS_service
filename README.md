@@ -36,7 +36,7 @@ Para utilização do cliente devemos chamar a função cliente com os seguintes 
 ```sh
 $ ./cliente joao@192.168.0.4:2524
 ```
-Depois da autenticação efetuada o utilizador poderá enviar e recebe rmensagens para qualquer utilizador que se encontre nesse servidor,listar os utilizadores online e mudar a palavra-passe para autenticação.
+Depois da autenticação efetuada o utilizador poderá enviar e receber mensagens para qualquer utilizador que se encontre nesse servidor,listar os utilizadores online e mudar a palavra-passe para autenticação. É de chamar atenção a possibilidade de enviar a mesma mensagem a vários utilizadores, escrevendo-os no campo para, separado por virgulas.
 
 ### Servidor:
 O servidor para ser inciado normalmente basta executa-lo.
@@ -49,5 +49,7 @@ Para fechar o servidor basta digitar -q.
 
 
 ## 4. Possiveis questões e funcionalidades:
-* Mensagens offline
+####As mensagens offline mantém se quando o servidor é reniciado?
+Sim, as mensagens enquanto não forem entregues ao utilizador final não são apagadas do sistema. O sistema utiliza ficheiros texto auxiliares pare guardar, mensagens, definições e utilizadores.
+
  
