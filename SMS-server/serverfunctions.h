@@ -37,7 +37,7 @@ struct sockaddr_in serv_addr, cli_addr;//estrutura para guardar os edereços de 
     }
 
     puts("Servidor iniciado.");
-    puts("A espera de ligação");
+    puts("A espera de ligação\n\n");
     puts("Digite -q para desligar em segurança o servidor.");
     c = sizeof(struct sockaddr_in); 
     while( (client = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t*)&c)) ){
@@ -129,7 +129,7 @@ void *connection_handler(void *socket_desc) {
   strcat(message,"2");
   write(sock , message , strlen(message)); //envia o codigo que a passoward foi aceite
   socketSaver(user_code, sock);
-  printf("* Utilizador %s  iniciou a sua sessão com sucesso.\n",Dados[user_code].login );
+  printf(ANSI_COLOR_GREEN"* Utilizador %s  iniciou a sua sessão com sucesso."ANSI_COLOR_RESET"\n",Dados[user_code].login );
   offlineRECEIVER(sock,user_code);
   //Identificaçao do que pretende o utilizador
   while(n!=9){
@@ -174,7 +174,7 @@ void *connection_handler(void *socket_desc) {
     }
     socketSaver(user_code, -1);
     logLogoff(user_code);
-    printf("# %s fez logout\n",Dados[user_code].login );
+    printf(ANSI_COLOR_RED "# %s fez logout" ANSI_COLOR_RESET "\n",Dados[user_code].login );
     message[0]='\0';
     strcat(message,"9");
     free(socket_desc);
@@ -204,7 +204,7 @@ int smssender(int user_code,int socksender){
       user[p]='\0';
 
     if (strcmp(user,"admin") == 0){
-      printf("\n---Nova mensagem para administrador de %s---\n%s\n\n",Dados[user_code].login,corpo);
+      printf(ANSI_COLOR_CYAN  "\n---Nova mensagem para administrador de %s---\n%s\n\n"  ANSI_COLOR_RESET,Dados[user_code].login,corpo);
       ++i;
       p=0;
       if (strlen(final)!=0)
@@ -243,7 +243,7 @@ int smssender(int user_code,int socksender){
   }while(i<=firstcomma);
 
   write(socksender,"2",30);
-  printf("-> %s mandou uma mensagem para %s\n",Dados[user_code].login, final);
+  printf(ANSI_COLOR_CYAN"->"ANSI_COLOR_RESET" %s mandou uma mensagem para %s\n",Dados[user_code].login, final);
   return 0;
 }
 
@@ -285,7 +285,7 @@ void globalSMS(int n){
 			write(Dados[i].sock , message , strlen(message));
 		}
 	}
-	puts("->Mensagem global enviada.");
+	puts(ANSI_COLOR_CYAN"->"ANSI_COLOR_RESET"Mensagem global enviada.");
 }
 }
 

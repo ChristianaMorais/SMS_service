@@ -45,7 +45,7 @@ void SMScreater(int sock){
 	}
 	user[i]='\0';
 
-	printf("Mensagem: ");
+	printf("Mensagem: " );
 	i=0;
 	
 	c=getchar();
@@ -110,7 +110,7 @@ void *MSreceaver(void *socket_desc){
 			break;
 
 		case 7:
-			printf("!!!!! Servidor informou que irá terminar o serviço de SMS !!!!!\nLogout forçado.\n");
+			printf(ANSI_COLOR_CYAN"!!!!! Servidor informou que irá terminar o serviço de SMS !!!!!\nLogout forçado.\n"ANSI_COLOR_RESET);
 			close(sock);
 			exit(0);
 			break;
@@ -133,13 +133,13 @@ void *MSreceaver(void *socket_desc){
 
 			n=0;
 			printf("\n");
-			printf("%s: ",user );
-			printf("%s\n",corpo );
+			printf(ANSI_COLOR_CYAN"%s: "ANSI_COLOR_RESET,user );
+			printf("%s\n\n",corpo );
 			mainprinter();
 			break;
 
 		case 9: //log out do sistema
-			puts("Log out efetuado");
+			puts(ANSI_COLOR_CYAN"Log out efetuado"ANSI_COLOR_RESET);
 			close(sock);
 			exit(0);
 			break;

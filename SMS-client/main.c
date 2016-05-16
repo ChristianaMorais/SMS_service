@@ -10,7 +10,7 @@ int main(int argc, char const *argv[])
 	if (argc==2)
 	{
 		system("clear");
-		puts("***Bem vindo ao SMS_service***");
+		puts(ANSI_COLOR_CYAN"***Bem vindo ao SMS_service***"ANSI_COLOR_RESET);
 		
 		int sock;
 		struct sockaddr_in server;
@@ -121,7 +121,7 @@ int main(int argc, char const *argv[])
           exit(EXIT_FAILURE);
       	}
 
-      	printf("\nUtilizador %s autenticado. Pode começar a usar o sistema!\n",user);
+      	printf(ANSI_COLOR_CYAN"\nUtilizador %s autenticado. Pode começar a usar o sistema!\n"ANSI_COLOR_RESET,user);
       	mainprinter();
 		while(1){
 			scanf("%c",&c);
