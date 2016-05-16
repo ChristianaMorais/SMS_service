@@ -155,11 +155,15 @@ void *connection_handler(void *socket_desc) {
           coderr=0;
         break;
 
+        case -48:
+        break;
+
         default:
         	if (coderr>=3){//o o utilizador pode dar ate 3 comunicaçoes desconhecidas seguidas , doutra forma o programa fecha automaticamente
             n=9;
         	}
         	else{
+            //printf("\n%d\n",n );
         		perror("Erro na comunicação.");
         		++coderr;
         	}

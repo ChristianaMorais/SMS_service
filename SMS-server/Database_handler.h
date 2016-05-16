@@ -79,7 +79,7 @@ void passwordConfirm(char passf[]){
 				pass2[i]='\0';
 				printf("\n");
 			}while(strcmp(pass1,pass2)!=0);
-
+			//bzero(passf,sizeof(passf));
 			strcpy(passf,pass1);
 
 }
@@ -304,7 +304,7 @@ void offlineRECEIVER(int sock,int codeuser){
 
 
 void passwordChanger(int userCode, char password[]){
-	int i,p, c;
+	int i=0,p, c;
 	char buffer[60];
 	FILE *fp = fopen(FX, "a+");
 	FILE *fpc= fopen(FOC,"w");
