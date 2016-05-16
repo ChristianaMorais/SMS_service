@@ -134,8 +134,10 @@ void *connection_handler(void *socket_desc) {
   //Identificaçao do que pretende o utilizador
   while(n!=9){
     bzero(menuact, sizeof(menuact));
-   	recv(sock ,menuact , 1 , 0);//fazer verificação de digitos
-   	n=menuact[0]-'0';
+   	if(recv(sock ,menuact , 1 , 0)>0)//verificar se o client enao se desligou
+   	  n=menuact[0]-'0';
+      else
+        n=9;
    		switch(n){
    			case 1:
    			  onlineusers(sock);

@@ -75,8 +75,10 @@ void *MSreceaver(void *socket_desc){
 
 	while(1){
 	bzero(messagel,sizeof(messagel));
-	recv(sock,messagel,600,0);
-	s=messagel[(strlen(messagel)-1)]-'0';
+	if(recv(sock,messagel,600,0)>0)
+		s=messagel[(strlen(messagel)-1)]-'0';
+	else
+		s=7;
 
 	//puts(messagel[(strlen(messagel)-1)]);
 	switch(s){

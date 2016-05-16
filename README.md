@@ -4,7 +4,10 @@
 O sistema que se encontra aqui apresentado é uma aplicação, em liguangem C, que tem como capacidade a comunicação entre vários utilizadores em diferentes localizaçoões, sendo que toda a sua comunicação é centralizada, passando por um único servidor. A tecnologia que s eencontra na base do servidor são as sockets. Sockets  
 
 ## 1. Instruções de instalação
-
+Os ficheiros podem ser obtidos fazendo clone do projeto do repositorio do gitlab.
+```sh
+	$ git clone ""
+```
 ### Cliente: 
 #### Componentes:
 * main.c
