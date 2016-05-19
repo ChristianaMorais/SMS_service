@@ -125,24 +125,24 @@ void addUser(char arg[]){//adiciona utilizador fornecido pelo argumento
 	}
 }
 
-void logReader(){
+void logReader(){ //leitura do ficheiro de registo de utilizadores online
 	FILE *fp = fopen(FON, "r");
 	int sock=0, user=0,i;
 	char s[60];
 	while(fgets(s,60,fp)){
-		for (i = 0; s[i]!=';'; ++i)
-			user=user*10+(s[i]-'0');
+		for (i = 0; s[i]!=';'; ++i)//o código do utilizador esta guardado na base
+			user=user*10+(s[i]-'0');//conversao de string para integer
 		++i;
-		for ( ; s[i]!=';'; ++i)
+		for ( ; s[i]!=';'; ++i)//leitura da socket
 			sock=sock*10+(s[i]-'0');
-		Dados[user].sock=sock;
+		Dados[user].sock=sock;//socket guardada na base de dados
 	user=0;
 	sock=0;
 	}
 	fclose(fp);
 }
 
-void DBreader(){ //leitura de base de dados
+void DBreader(){ //leitura da base de dados de utilizadores
 	FILE *fx; 
 	bzero(Dados,sizeof(Dados));
 	char s[100];
@@ -150,24 +150,25 @@ void DBreader(){ //leitura de base de dados
 	fx=fopen(FX,"r");
 	while(fgets(s,100,fx)){
 		j=0;
-		for(i=0;s[i]!=';';++i) {
+		for(i=0;s[i]!=';';++i) {//nome do utilizador
 			Dados[n].login[j]=s[i];
 			++j;
 		}
 		Dados[n].login[i]='\0';
+
 		j=0;
-		for(++i;s[i]!=';';++i) {
+		for(++i;s[i]!=';';++i) {//passwoard
 			Dados[n].password[j]=s[i];
 			++j;
 		}
 		Dados[n].password[i]='\0';
-		Dados[n].sock=-1;
-		//printf("%s\n",Dados[n].login );
-		//printf("%s %d\n",Dados[n].password,UserNumber() );
+
+		Dados[n].sock=-1;//inicia o utilizador como offline
 		++n;
 	}
 	fclose(fx);
 	logReader();//leitura de utilizadores online
+	/*Para o caso em que o DBreader é corrido com o programa em funcionamento existe um ficheiro auxiliar que é criado, onde são guardadas as sockets dos utilizadores que se encontravam online*/
 }
 
 int findUser(char login[]){ //na base de dados procura se existe um utilizador com o login inserido
@@ -201,12 +202,6 @@ void socketSaver(int code, int socket){
 	Dados[code].sock=socket;
 	if (socket!=-1)
 		logcreator(code,socket);
-}
-
-void formatter(char login[]){
-	int i;
-	for (i = 0; i < 29 && isalnum(login[i])!=0; ++i);		
-		login[i]='\0';
 }
 
 void onlineusers(int sock){

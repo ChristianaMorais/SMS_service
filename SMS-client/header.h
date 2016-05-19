@@ -1,7 +1,7 @@
 #pragma once
 
-#define ANSI_COLOR_RESET   "\x1b[0m"
-#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m" // reset para a cor do print f
+#define ANSI_COLOR_CYAN    "\x1b[36m" //cor azul
 
 #include "stdio.h"
 #include "stdlib.h"

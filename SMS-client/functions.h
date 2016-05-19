@@ -6,6 +6,8 @@
 
 int charpermited(char c){
 	//a funçao retorna 1 se o carater nao for permitido isto pode ativar um ciclo
+
+
 	switch (c){
 		case ';':puts("Carater não permitido!");return 1;break;
 		case ' ':puts("Carater não permitido!");return 1; break;
@@ -110,8 +112,8 @@ void *MSreceaver(void *socket_desc){
 			break;
 
 		case 7:
-			printf(ANSI_COLOR_CYAN"!!!!! Servidor informou que irá terminar o serviço de SMS !!!!!\nLogout forçado.\n"ANSI_COLOR_RESET);
 			close(sock);
+			printf(ANSI_COLOR_CYAN"!!!!! Servidor informou que irá terminar o serviço de SMS !!!!!\nLogout forçado.\n"ANSI_COLOR_RESET);
 			exit(0);
 			break;
 

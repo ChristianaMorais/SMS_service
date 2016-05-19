@@ -12,7 +12,7 @@ struct sockaddr_in serv_addr, cli_addr;//estrutura para guardar os edereços de 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
    if (sockfd == -1) { // verificação de estado da socket
-   	perror("ERRO Impossivel de abrir socket");
+   	perror("ERRO - Impossivel de abrir socket");
    	exit(EXIT_FAILURE);
    }
 
@@ -23,105 +23,103 @@ struct sockaddr_in serv_addr, cli_addr;//estrutura para guardar os edereços de 
 
    //juntar tudo
    if( bind(sockfd,(struct sockaddr *)&serv_addr , sizeof(serv_addr)) < 0){
-   	perror("ERRO - Bind falhou");
-   	exit(EXIT_FAILURE);
+   		perror(ANSI_COLOR_RED"ERRO"ANSI_COLOR_RESET" - Bind falhou");
+   		exit(EXIT_FAILURE);
+  
    }
-    listen(sockfd , 3); //espera por ligação o numero e o maximo de ligaçoes
+    listen(sockfd , 15); //espera por ligação o numero e o maximo de ligaçoes
 
-      //consola de administração do servidor 
+    //consola de administração do servidor 
     pthread_t menu_thread;
-    if( pthread_create( &menu_thread , NULL ,  serveradminpanel , NULL) < 0)
-    {
-    	perror("could not create thread");
+    if( pthread_create( &menu_thread , NULL ,  serveradminpanel , NULL) < 0){
+    	perror(ANSI_COLOR_RED"ERRO"ANSI_COLOR_RESET" - insucesso a criar thread");
     	exit(EXIT_FAILURE);
     }
 
     puts("Servidor iniciado.");
-    puts("A espera de ligação\n\n");
-    puts("Digite -q para desligar em segurança o servidor.");
+    puts("A espera de ligação\n");
+    //puts("Digite -q para desligar em segurança o servidor.");
     c = sizeof(struct sockaddr_in); 
     while( (client = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t*)&c)) ){
     	pthread_t sniffer_thread;
     	newsock = malloc(4);
     	*newsock = client;
 
-    	if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*) newsock) < 0){
-    		perror("could not create thread");
+    	if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*) newsock) < 0){ //criar uma thread para cada utilizador
+    		perror(ANSI_COLOR_RED"ERRO"ANSI_COLOR_RESET" - insucesso a criar thread");
     		exit(EXIT_FAILURE);
     	}
     }
 
     if (client < 0){
-    	perror("accept failed");
+    	perror(ANSI_COLOR_RED"ERRO"ANSI_COLOR_RESET"- falha ao aceitar ligação");
     	exit(EXIT_FAILURE);
     }
 }
 
 
 void *connection_handler(void *socket_desc) {
-  
+
 	int sock = *(int*)socket_desc, i,n=0;
 	int read_size;
 	int user_code=-1;
-  int coderr=0; //numero de vezes que a mensagem falhou
-  char message[1000] , client_message[2000], menuact[3];
-  char login[30],pass[30];
+	int coderr=0; //numero de vezes que a mensagem falhou
+	char message[1000] , client_message[2000], menuact[3];
+	char login[30],pass[30];
 
   /*Autenticação do nome do utilizador*/
   //n contador de logins
   while(n<=3){ //verificação de utilizador
   	bzero(message, sizeof(message));
   	recv(sock , login , 30 , 0);
-  	formatter(login);
-    user_code=findUser(login); //compara o nome dado com a base de dados
+  	user_code=findUser(login); //compara o nome dado com a base de dados
     ++n;
     if (user_code!=-1){
     	bzero(message, sizeof(message));
       strcat(message,"2");//codigo para dizer que o login foi aceite
       write(sock , message , strlen(message));
       break;
-    }
-    else{
-  	   if (n==3){
-  		    bzero(message, sizeof(message));
+  }
+  else{
+  	if (n==3){
+  		bzero(message, sizeof(message));
           strcat(message,"1"); //envio de codigo para desligar a ligação
           write(sock , message , strlen(message));
           puts("Ligação desligada, login sem sucesso.");
           close(sock);
           free(socket_desc);
           return 0;
-       }
-       else{
-    	    bzero(message, sizeof(message));
+      }
+      else{
+      	bzero(message, sizeof(message));
           strcat(message,"0"); //codigo para continuar o ciclo
           write(sock , message , strlen(message));  
       }
-    }
   }
+}
 
 
   /*Autenticação da passwoard*/
   n=0;//contador de tentaivas
   while(n<=3){
-      bzero(pass, sizeof(pass));
-      recv(sock , pass , 30 , 0);
-      formatter(pass);
-      if (strcmp(pass,Dados[user_code].password)==0) //confirma se a passwoard corresponde com o utilizador
+  	bzero(pass, sizeof(pass));
+  	recv(sock , pass , 30 , 0);
+  	  if (strcmp(pass,Dados[user_code].password)==0) //confirma se a passwoard corresponde com o utilizador
       	break;
       ++n;
       if (n==3){//significa que exedeu  as tentativas permitidas
-         	bzero(message, sizeof(message));
-       	  strcat(message,"1");
-       	  write(sock , message , strlen(message));
-       	  puts("Ligação desligada, login sem sucesso.");
-         	free(socket_desc);
-       	  return 0;
-       }
-       else{
-       	  bzero(message, sizeof(message));
+      	bzero(message, sizeof(message));
+      	strcat(message,"1");
+      	write(sock , message , strlen(message));
+      	puts("Ligação desligada, login sem sucesso.");
+      	free(socket_desc);
+      	return 0;
+      }
+      else{
+      	bzero(message, sizeof(message));
           strcat(message,"0");//indica que nao acertou e que o ciclo vai continuar
           write(sock , message , strlen(message));
-    }
+      }
   }
 
 
@@ -130,50 +128,48 @@ void *connection_handler(void *socket_desc) {
   write(sock , message , strlen(message)); //envia o codigo que a passoward foi aceite
   socketSaver(user_code, sock);
   printf(ANSI_COLOR_GREEN"* Utilizador %s  iniciou a sua sessão com sucesso."ANSI_COLOR_RESET"\n",Dados[user_code].login );
-  offlineRECEIVER(sock,user_code);
-  //Identificaçao do que pretende o utilizador
-  while(n!=9){
-    bzero(menuact, sizeof(menuact));
-   	if(recv(sock ,menuact , 1 , 0)>0)//verificar se o client enao se desligou
-   	  n=menuact[0]-'0';
-      else
-        n=9;
-   		switch(n){
-   			case 1:
-   			  onlineusers(sock);
-          coderr=0;
-   			  break;
-   			case 2:
-   			  i=smssender(user_code,sock);
-          coderr=0;
-   			  break;
-   			/*case 3:
-        	printf("%s ficou offline.\n",Dados[user_code].login ); //ver que caso e e este 3
-          break;*/
-        case 9:
-        	break;//o 9 como n ira parar o ciclo
-        case 4:
-        	remoteChanger(user_code,sock);
-          coderr=0;
-        break;
+  offlineRECEIVER(sock,user_code); //Envia mensagens pendente
+  
+  /*A variavel coderr que vai aparecer várias vezes no próximo switch é contador, que nos permite fehcar a thread automaticamente apos 3 codigos não reconhecidos*/
 
-        case -48:
-        break;
+  while(n!=9){
+  	bzero(menuact, sizeof(menuact));
+   	if(recv(sock ,menuact , 1 , 0)>0)//verificar se o client enao se desligou
+   		n=menuact[0]-'0';
+   	else
+   		n=9;
+   	switch(n){
+   		case 1://Indica quais são os utilizadores online
+   			onlineusers(sock);
+   			coderr=0;
+   			break;
+   		case 2://Envia uma sms
+   			i=smssender(user_code,sock);
+   			coderr=0;
+   			break;
+   		case 9:
+        	break;//o 9 como n ira parar o ciclo
+        case 4://Mudança de password
+        	remoteChanger(user_code,sock);
+        	coderr=0;
+        	break;
+
+        //case -48:
+        //	break;
 
         default:
         	if (coderr>=3){//o o utilizador pode dar ate 3 comunicaçoes desconhecidas seguidas , doutra forma o programa fecha automaticamente
-            n=9;
+        		n=9;
         	}
         	else{
-            //printf("\n%d\n",n );
-        		perror("Erro na comunicação.");
+            	perror("Erro na comunicação.");
         		++coderr;
         	}
         	break; // assim so vai desligar esta socket
         }
     }
-    socketSaver(user_code, -1);
-    logLogoff(user_code);
+    socketSaver(user_code, -1); //marca utilizador como offline
+    logLogoff(user_code); //retira o utilizador dos ficheios onde estão as socket guardadas
     printf(ANSI_COLOR_RED "# %s fez logout" ANSI_COLOR_RESET "\n",Dados[user_code].login );
     message[0]='\0';
     strcat(message,"9");
@@ -189,45 +185,47 @@ int smssender(int user_code,int socksender){
   bzero(final,sizeof(final));
   recv(socksender,argumentos,1024,0);
 
-  for (i = 0; argumentos[i]!=';'; ++i);
-  firstcomma=i;
+  for (i = 0; argumentos[i]!=';'; ++i);//identifica onde é que se encontra o inicio da mensagem na string
+  	firstcomma=i;
 
-  for ( ++i  ; argumentos[i] != '\0' ; ++i){//isolar a mensagem em si
+  for ( ++i  ; argumentos[i] != '\0' ; ++i){//isola a mensagem em si
     corpo[n]=argumentos[i];
     ++n;
   }
   corpo[n]='\0';
+  
   i=0;
-  /*Isola os utilizadores */
+  /*Isola os utilizadores e manda a mesma mensagem para cada*/
   do{
     if (argumentos[i] == ',' || argumentos[i] == ';'){
-      user[p]='\0';
+      	user[p]='\0';
 
-    if (strcmp(user,"admin") == 0){
-      printf(ANSI_COLOR_CYAN  "\n---Nova mensagem para administrador de %s---\n%s\n\n"  ANSI_COLOR_RESET,Dados[user_code].login,corpo);
-      ++i;
-      p=0;
-      if (strlen(final)!=0)
-        strcat(final,", ");
-      strcat(final,"admin");
-      continue;
-    }
+    	if (strcmp(user,"admin") == 0){
+    		printf(ANSI_COLOR_CYAN  "\n---Nova mensagem para administrador de %s---\n%s\n\n"  ANSI_COLOR_RESET,Dados[user_code].login,corpo);
+    		++i;//atualiza os contadores como se tivesse percorrido todo o ciclo
+      		p=0;
+      		if (strlen(final)!=0)
+        		strcat(final,", ");
+      		strcat(final,"admin");
+      		continue;
+    	}
 
-    userSend=findUser(user);
-    if (userSend==-1){//verifica se existe o utilizador
-      write(socksender,"4",30);
-    }
-    //escolha do metodo de envio
-    bzero(send,sizeof(send));
-    if (Dados[userSend].sock!=-1){//online
-      strcat(send,Dados[user_code].login);
-      strcat(send,";");
-      strcat(send,corpo);
-      strcat(send,"8");
-      strcat(send,"\0");
-      write(Dados[userSend].sock,send,strlen(send));
-    }
-    else {
+    	userSend=findUser(user);
+    	if (userSend==-1){//verifica se existe o utilizador
+      		write(socksender,"4",30);
+    	}
+
+    	//escolha do metodo de envio
+    	bzero(send,sizeof(send));
+    	if (Dados[userSend].sock!=-1){se estiver online//online
+    		strcat(send,Dados[user_code].login);
+    		strcat(send,";");
+    		strcat(send,corpo);
+    		strcat(send,"8");
+    		strcat(send,"\0");
+    		write(Dados[userSend].sock,send,strlen(send));
+    	}
+    	else { // se estiver offline
       offlineSMS(user_code,userSend,corpo);     
     }
     p=0;
@@ -239,26 +237,25 @@ int smssender(int user_code,int socksender){
     user[p]=argumentos[i];
     ++p;
   }
-    ++i;
+  ++i;
   }while(i<=firstcomma);
 
-  write(socksender,"2",30);
+  write(socksender,"2",30);//codigo de a mensagem ter sido enviada com sucesso.
   printf(ANSI_COLOR_CYAN"->"ANSI_COLOR_RESET" %s mandou uma mensagem para %s\n",Dados[user_code].login, final);
   return 0;
 }
 
-void globalSMS(int n){
+void globalSMS(int n){//envia uma mensagem para um utilizador ou de forma global para todos , se o n==0 e uma mensagem para um so utilizador
 	__fpurge(stdin);
 	char message[600], v;
-  char user[60];
-  bzero(message,sizeof(message));
+	char user[60];
+	bzero(message,sizeof(message));
 	int i=6;
-  if (n==0)
-  {
-    printf("Para: ");
-    scanf("%s",user);
-  }
-  __fpurge(stdin);
+  	if (n==0){
+    	printf("Para: ");
+    	scanf("%s",user);
+  	}
+ 	__fpurge(stdin);
 	strcat(message,"admin;");
 	printf("Mensagem: ");
 	v=getchar();
@@ -328,9 +325,9 @@ void *serveradminpanel(){
     			break;
 
     		case 'q':
-    		  printf("!!!!!\nTem a certeza que pretende terminar o servidor?\nEstão neste momento %d utilizadores online...\nConfirme por favor (s/n) ? ", onlineuserscounter());
+    		  printf("\nTem a certeza que pretende terminar o servidor?\nEstão neste momento %d utilizadores online...\nConfirme por favor (s/n) ? ", onlineuserscounter());
     			if (!(confirma())){
-            puts("!!!!! A enviar mensagem de terminação a todos os utilizadores");
+            puts("\n!!!!! A enviar mensagem de fecho de sessão a todos os utilizadores");
             for (i = 0; i <UserNumber(); ++i){
     				  if (Dados[i].sock!=-1)
                 write(Dados[i].sock,"7",2);
@@ -348,7 +345,6 @@ void *serveradminpanel(){
         case ':':
           i=2;
           b=0;
-          bzero(user,sizeof(user));
           while(op[i]!='\0'){
             if (isdigit(op[i])==0){
               puts("Porta inválida!");
