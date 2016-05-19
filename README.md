@@ -48,7 +48,7 @@ A porta que é utilizada por default é a porta 2524, no entanto pode ser mudada
 Para fechar o servidor basta digitar -q.		
 
 ## 3. Resolução de erros comuns:
-####ERRO - Bind falhou
+#### ERRO - Bind falhou
 Por norma este erro significa que a porta na qual está a tentar abrir já se encontra em uso~por outro programa, poderá pará-lo ou simplesmente mudar a porta, usando a como argumento ':' espaço e a porta que pretende usar.
 
 ## 4. Possiveis questões e funcionalidades:
