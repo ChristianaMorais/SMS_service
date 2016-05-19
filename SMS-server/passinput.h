@@ -21,7 +21,7 @@ char getch(void) {
   initTermios(0);
   ch = getchar();
   resetTermios();
-  if (isalnum(ch))
-    printf("*");
+  /*if (isalnum(ch)) devido a forma como está defenida esta função quando é feito backspace o asterisco não é eliminado do ecrã levando, a alguma confusão por parte do utilizador, sendo assim o echo do asterisco é desligado
+    printf("*");*/
   return ch;
 }
