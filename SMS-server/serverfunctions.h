@@ -193,6 +193,7 @@ int smssender(int user_code,int socksender){
   	corpo[n]='\0';
   
   	i=0;
+  	bzero(final,sizeof(final));
   	/*Isola os utilizadores e manda a mesma mensagem para cada*/
   	do{
   			if (argumentos[i] == ',' || argumentos[i] == ';'){
@@ -217,7 +218,7 @@ int smssender(int user_code,int socksender){
     			write(socksender,send,strlen(send));
     			++i;
     			p=0;
-    			continue;
+    			continue;    			
     		}
 
     		//escolha do metodo de envio
@@ -243,9 +244,10 @@ int smssender(int user_code,int socksender){
     	}
     	++i;
 	}while(i<=firstcomma);
-
-  	write(socksender,"2",30);//codigo de a mensagem ter sido enviada com sucesso.
-  	printf(ANSI_COLOR_CYAN"->"ANSI_COLOR_RESET" %s mandou uma mensagem para %s\n",Dados[user_code].login, final);
+	if (strlen(final)!=0){
+  		write(socksender,"2",30);//codigo de a mensagem ter sido enviada com sucesso.
+  		printf(ANSI_COLOR_CYAN"->"ANSI_COLOR_RESET" %s mandou uma mensagem para %s\n",Dados[user_code].login, final);
+  	}
   	return 0;
 }
 
