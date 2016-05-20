@@ -75,6 +75,7 @@ void *MSreceaver(void *socket_desc){
 	char user[30];
 	int i, n=0,s, b=0;
 
+	write(sock,"1",1);
 	while(1){
 	bzero(messagel,sizeof(messagel));
 	if(recv(sock,messagel,600,0)>0)
@@ -96,7 +97,7 @@ void *MSreceaver(void *socket_desc){
 			break;
 
 		case 3://recepção de uma mensgaem offline
-			puts("Mensagem Offline");
+			puts("\nMensagem Offline");
 			messagel[(strlen(messagel)-1)]='\0';
 			printf("%s\n",messagel);
 			break;
