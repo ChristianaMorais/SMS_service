@@ -29,7 +29,7 @@ Os ficheiros podem ser obtidos fazendo clone do projeto do repositorio do gitlab
 
 #### Instrução de compilação:
 ```sh
-$ gcc server.c -o servidor -lpthread
+	$ gcc server.c -o servidor -lpthread
 ```
 
 ## 2. Utilização do programa
@@ -37,9 +37,18 @@ $ gcc server.c -o servidor -lpthread
 ### Cliente:
 Para utilização do cliente devemos chamar a função cliente com os seguintes argumentos: utilizador, ip e porta da seguinte forma, que e descrita no exemplo abaixo, no qual joao é o utilizador, 192.168.0.4 é o ip do servidor, 2524 é a porta onde se encontra o servidor:
 ```sh
-$ ./cliente joao@192.168.0.4:2524
+	$ ./cliente joao@192.168.0.4:2524
 ```
 Depois da autenticação efetuada o utilizador poderá enviar e receber mensagens para qualquer utilizador que se encontre nesse servidor,listar os utilizadores online e mudar a palavra-passe para autenticação. É de chamar atenção a possibilidade de enviar a mesma mensagem a vários utilizadores, escrevendo-os no campo para, separado por virgulas.
+Ao fazer a autenticação é nos apresentado um menu disponível para o utilizador com 4 opções de utilização:
+
+* 1) Listar utilizadores online - mostra todos os utilizadores que no momento estão online incluíndo ele próprio.
+
+* 2) Mandar SMS para um ou mais utilizadores - permite ao utilizador autenticado enviar mensagens aos utilizadores que se encontra online.
+
+* 3) Logout - o utilizador pode sair do programa.
+
+* 4) Mudar password - com esta opção é possivel alterar a password de autenticação.
 
 ### Servidor:
 O servidor para ser inciado normalmente basta executa-lo.
