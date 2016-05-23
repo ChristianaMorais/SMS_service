@@ -1,4 +1,3 @@
-
 # SMS Receaver
 
 O sistema que se encontra aqui apresentado é uma aplicação, em liguangem C, que tem como capacidade a comunicação entre vários utilizadores em diferentes localizaçoões, sendo que toda a sua comunicação é centralizada, passando por um único servidor. A tecnologia que s eencontra na base do servidor são as sockets. Sockets  
@@ -40,6 +39,7 @@ Para utilização do cliente devemos chamar a função cliente com os seguintes 
 	$ ./cliente joao@192.168.0.4:2524
 ```
 Depois da autenticação efetuada o utilizador poderá enviar e receber mensagens para qualquer utilizador que se encontre nesse servidor,listar os utilizadores online e mudar a palavra-passe para autenticação. É de chamar atenção a possibilidade de enviar a mesma mensagem a vários utilizadores, escrevendo-os no campo para, separado por virgulas.
+
 Ao fazer a autenticação é nos apresentado um menu disponível para o utilizador com 4 opções de utilização:
 
 * 1) Listar utilizadores online - mostra todos os utilizadores que no momento estão online incluíndo ele próprio.
