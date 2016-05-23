@@ -53,7 +53,11 @@ Ao fazer a autenticação é nos apresentado um menu disponível para o utilizad
 ### Servidor:
 O servidor para ser inciado normalmente basta executa-lo.
 Com o servidor a correr os utilizadores poderão conectar-se sem qualquer mais demora ao servidor. Claro que na primeira utilização do servidor devera criar os utilizadores, para isso existem duas opções -a novoutilizador. 
-A porta que é utilizada por default é a porta 2524, no entanto pode ser mudada digitando -:seguido da nova porta sem espaços e no final reniciando o servidor.
+A porta que é utilizada por default é a porta 2524, no entanto pode ser mudada digitando -:seguido da nova porta sem espaços e no final reniciando o servidor. Outra opção é correr o servidor com os argumentos adduser, para adicionar um utilizador ou : para mudar de porta como é exemplificado a seguir.
+```sh
+    $ ./server adduser [novo utilizador]
+    $ ./server : [nova porta]
+```
 Para fechar o servidor basta digitar -q.		
 
 ## 3. Resolução de erros comuns:
