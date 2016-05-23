@@ -172,7 +172,7 @@ void passwordConfirm(char passf[]){
 			printf("As password's não correspondem volte a inserir.\n");
 		}
 
-		printf("\n Nova password: ");
+		printf("\nNova password: ");
 
 		v=getch();
 		while (v!='\n'&&i<29){
