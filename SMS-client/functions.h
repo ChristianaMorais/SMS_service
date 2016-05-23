@@ -23,7 +23,7 @@ int commandrcv(char messagel){
 	return (messagel-'0');
 }
 void mainprinter(){
-	printf("**MENU**\n1)Listar utilizadores online.\n2)Mandar SMS a um utilizador.\n3)Logout.\n4)Mudar password.\n");
+	printf("**MENU**\n1)Listar utilizadores online.\n2)Mandar SMS a um ou mais utilizadores.\n3)Logout.\n4)Mudar password.\n");
 }
 
 void SMScreater(int sock){
