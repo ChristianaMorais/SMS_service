@@ -15,8 +15,7 @@ int charpermited(char c){
 	}
 }
 int commandrcv(char messagel){
-	if (isdigit(messagel)==0)
-	{
+	if (isdigit(messagel)==0){
 		perror("A comunicação falhou.");
 		exit(EXIT_FAILURE);
 	}
@@ -35,11 +34,6 @@ void SMScreater(int sock){
 	c=getchar();
 	while(c!='\n'&&i<70){
 		if (c!=' '){
-			/*if (charpermited(c)==1){ //problemas  aqui
-				puts("Vai fechar o programa");
-				__fpurge(stdin);
-				return;
-			}*/
 			user[i]=c;
 			++i;			
 		}
@@ -58,14 +52,12 @@ void SMScreater(int sock){
 	}
 	corpo[i]='\0';
 	printf("\n");
-	//if (strlen(corpo)!=0){
 	bzero(messagel,sizeof(messagel));
 	strcat(messagel,user);
 	strcat(messagel,";");
 	strcat(messagel, corpo);
 	strcat(messagel,"\0");
 	write(sock,messagel,strlen(messagel));
-	//}
 }
 
 void *MSreceaver(void *socket_desc){
@@ -78,12 +70,12 @@ void *MSreceaver(void *socket_desc){
 	write(sock,"1",1);
 	while(1){
 	bzero(messagel,sizeof(messagel));
+
 	if(recv(sock,messagel,600,0)>0)
 		s=messagel[(strlen(messagel)-1)]-'0';
 	else
 		s=7;
 
-	//puts(messagel[(strlen(messagel)-1)]);
 	switch(s){
 		case 1://utilizadores online
 			messagel[(strlen(messagel)-1)]='\0';
@@ -161,7 +153,7 @@ void waitFor (unsigned int secs) {
     while (time(0) < retTime);             
 }
 
-void passwordConfirm(char passf[]){
+void passwordConfirm(char passf[]){ //função de repetiçao de passwoard ate as duas coincidirem
 	int i=0;
 	char pass1[30], pass2[30],v;
 	__fpurge(stdin);

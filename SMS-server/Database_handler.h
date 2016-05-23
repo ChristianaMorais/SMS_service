@@ -173,18 +173,15 @@ void DBreader(){ //leitura da base de dados de utilizadores
 
 int findUser(char login[]){ //na base de dados procura se existe um utilizador com o login inserido
 	int i;
-	//printf("%s ff\n",login );
 	for (i = 0; i < UserNumber(); ++i)	{
-		//printf("%s\n",Dados[i].login);
 		if (strcmp(login,Dados[i].login)==0)	{
 			return i;
 		}
 	}
 	return -1;
-
 }
 
-void logcreator(int code, int socket){
+void logcreator(int code, int socket){ //guarda a sockets e o codigo dos utilizadores, para que qd recarreguemos a base de dados nao percamos os utilizadores online
 	FILE *fp = fopen(FON, "a");
 	char buffer[60], aux[50];
 	bzero(buffer,sizeof(buffer));
@@ -198,13 +195,13 @@ void logcreator(int code, int socket){
     fclose(fp);
 }
 
-void socketSaver(int code, int socket){
+void socketSaver(int code, int socket){ //muda o estado do utilizador offline -1, online socket
 	Dados[code].sock=socket;
 	if (socket!=-1)
 		logcreator(code,socket);
 }
 
-void onlineusers(int sock){
+void onlineusers(int sock){ //imprime no cliente os utilizadores online
 	char message[500]="\nUtilizadores online:\n";
 	int i, flag=0;
 	for (i = 0; i < UserNumber(); ++i)	{
@@ -218,17 +215,11 @@ void onlineusers(int sock){
 	strcat(message,"1");
 	strcat(message,"\0");
 	if (flag==1){
-		//printf("mensagem %s \n",message );
 		write(sock,message,strlen(message));
 	}
-	/*else //se ninguem esta online comoe stas a a pedir
-	{
-		char message1[]="Não se encontram utilizadores online.1\n";
-		write(sock,message1,strlen(message1));
-	}*/
 }
 
-int onlineuserscounter(){
+int onlineuserscounter(){ //conta utilizadores online
 	int count=0,i;
 	for (i = 0; i < UserNumber(); ++i)
 	{
@@ -237,10 +228,6 @@ int onlineuserscounter(){
 	}
 	return count;
 }
-
-/*int numberChar(int numero){
-	return (floor (log10 (abs (number))) + 1);
-}*/
 
 void offlineSMS(int user,int userSend,char corpo[]){ //guarda a sms num ficheiro
 	FILE *fp = fopen(FO, "a");
@@ -259,14 +246,14 @@ void offlineSMS(int user,int userSend,char corpo[]){ //guarda a sms num ficheiro
 	fclose(fp);
 }
 
-void offlineRECEIVER(int sock,int codeuser){
+void offlineRECEIVER(int sock,int codeuser){ // le da base de dados e envia as mensagens offlines
 	FILE *fp = fopen(FO, "a+");
 	FILE *fpc= fopen(FOC,"w");
 	char message1[1000];
 	char arg[1000];
 	int code=0,n=0,i=0;
 	bzero(arg,sizeof(arg));
-	while(fgets(message1,1000,fp)){
+	while(fgets(message1,1000,fp)){ //leitura de ficheiro
 		for (i = 0; message1[i]!=';' ; ++i)
 			code=code*10+(message1[i]-'0');
 		if (codeuser==code){
@@ -293,11 +280,11 @@ void offlineRECEIVER(int sock,int codeuser){
 	fclose(fp);
 	fclose(fpc);
 	remove(FO);
-	rename(FOC,FO);
+	rename(FOC,FO); //retira as mensagens que ja foram entregues
 }
 
 
-void passwordChanger(int userCode, char password[]){
+void passwordChanger(int userCode, char password[]){ //mudança de password
 	int i=0,p, c;
 	char buffer[60];
 	FILE *fp = fopen(FX, "a+");
@@ -332,7 +319,7 @@ void passwordChanger(int userCode, char password[]){
 	printf("A paswoard de %s foi alterada.\n",Dados[userCode].login);
 }
 
-void remoteChanger(int user_code,int sock){
+void remoteChanger(int user_code,int sock){ //mudança de password remota incitada pelo utilizador
 	char buffer[90];
 	bzero(buffer,sizeof(buffer));
 	recv(sock ,buffer , 90 , 0);
@@ -341,7 +328,7 @@ void remoteChanger(int user_code,int sock){
 	write(sock,"5",30);
 }
 
-void logLogoff(int user_code){
+void logLogoff(int user_code){//retira o registo de online do ficheiro 
 	FILE *fpc= fopen(FOC,"w");
 	FILE *fp = fopen(FON,"ab+");
 	char buffer[60];
@@ -359,7 +346,7 @@ void logLogoff(int user_code){
 	rename(FOC,FON);
 }
 
-int portReader(){
+int portReader(){ //le as configurações de porta
 	int i=2524,c=0;
 	char buffer[10];
 	FILE *fp = fopen(FC,"ab+");
@@ -374,7 +361,7 @@ int portReader(){
 	return i;
 }
 
-void portChanger(int port){
+void portChanger(int port){ //escreve as defenições de porta na configuração
 	char buffer[60];
 	FILE *fp = fopen(FC,"ab+");
 	FILE *fpc= fopen(FOC,"w");
