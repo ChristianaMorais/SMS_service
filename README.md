@@ -1,6 +1,8 @@
 # SMS Receaver
-#####André Cirne - 201505860
-#####Cristiana Morais - 201505454
+
+###### André Cirne - 201505860
+###### Cristiana Morais - 201505454
+
 O sistema que se encontra aqui apresentado é uma aplicação, em liguangem C, que tem como capacidade a comunicação entre vários utilizadores em diferentes localizaçoões, sendo que toda a sua comunicação é centralizada, passando por um único servidor. A tecnologia que se encontra na base do servidor são as sockets. Sockets é o ponto-final de um fluxo de comunicação entre dois programas através de uma rede. 
 
 ## 1. Instruções de instalação
@@ -95,4 +97,4 @@ Sim, as mensagens enquanto não forem entregues ao utilizador final não são ap
 Não, o servidor tem a capacidade de recarregar base de dados sem que seja reiniciado, levando a que todas estas alterações possam ser feitas, mantendo o normal serviço de sms's. A unica configuração na qual é necessário reiniciar o servidor é a configuração de porta.
 
 
-#####Nota: Este programa poderá ser utilizado ao nível de uma unica máquina, usando o localhost como ip, nomeadamente 127.0.0.1.
+###### Nota: Este programa poderá ser utilizado ao nível de uma unica máquina, usando o localhost como ip, nomeadamente 127.0.0.1.
