@@ -58,11 +58,28 @@ A porta que é utilizada por default é a porta 2524, no entanto pode ser mudada
     $ ./server adduser [novo utilizador]
     $ ./server : [nova porta]
 ```
-Durante a utilização do servidor, além de informações dinâmicas sobre os utilizadores, o administrador do servidor terá acesso também a uma linha de comandos na qual tem acesso a várias funções administrativas, as quais são listadas a seguir:
-```sh
-	
-``` 
-Para fechar o servidor basta digitar -q.		
+ Com a inicianção do servidor fica disponivel uma consola do servidor com as opções:
+ 
+ * -a : adicionar um novo utilizador; - permite adicionar um novo utilizador ao servidor.
+ 
+ * -m : Enviar mensagem global; - evia uma mensagem a todos os utilizadores online.
+ 
+ * -p [Utilizador] : mudar a passwoard de um utilizador; - possibilita a alteração da password do utilizador.
+ 
+ * -s :mandar sms; - envia um sms aos utilizadores disponíveis. 
+ 
+ * -h : mostra a ajuda à consola; - apresenta um menu de ajuda sobre a utilização da consola.
+ 
+ * -r: eliminar utilizador ou lista de utilizadores; - elemina um ou mais utilizadores, sendo possivel tambem faze-lo de duas formas diferentes: 
+ 
+     * -a: opção que apaga todos os utilizadores; - apaga todos os utilizadores disponíves.
+     
+     * -v: apagar de forma verbal; - apaga os utilizadores de forma verbal.
+     
+ * -:[port] : altera a porta do servidor; - com a introdução de uma nova porta é possivel alterar a localização do servidor.
+ 
+ * -q : desliga o servidor; 
+ 		
 
 ## 3. Resolução de erros comuns:
 #### ERRO - Bind falhou
