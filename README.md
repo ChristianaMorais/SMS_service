@@ -58,6 +58,10 @@ A porta que é utilizada por default é a porta 2524, no entanto pode ser mudada
     $ ./server adduser [novo utilizador]
     $ ./server : [nova porta]
 ```
+Durante a utilização do servidor, além de informações dinâmicas sobre os utilizadores, o administrador do servidor terá acesso também a uma linha de comandos na qual tem acesso a várias funções administrativas, as quais são listadas a seguir:
+```sh
+	
+``` 
 Para fechar o servidor basta digitar -q.		
 
 ## 3. Resolução de erros comuns:
