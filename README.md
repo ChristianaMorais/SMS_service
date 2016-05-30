@@ -1,8 +1,7 @@
+##### [André Cirne - 201505860](https://sigarra.up.pt/fcup/pt/fest_geral.cursos_list?pv_num_unico=201505860)
+##### [Cristiana Morais - 201505454](https://sigarra.up.pt/fcup/pt/fest_geral.cursos_list?pv_num_unico=201505454)
+
 # SMS Receaver
-
-###### André Cirne - 201505860
-###### Cristiana Morais - 201505454
-
 O sistema que se encontra aqui apresentado é uma aplicação, em liguangem C, que tem como capacidade a comunicação entre vários utilizadores em diferentes localizaçoões, sendo que toda a sua comunicação é centralizada, passando por um único servidor. A tecnologia que se encontra na base do servidor são as sockets. Sockets é o ponto-final de um fluxo de comunicação entre dois programas através de uma rede. 
 
 ## 1. Instruções de instalação
