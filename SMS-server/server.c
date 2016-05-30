@@ -5,7 +5,7 @@ int main(int argc, char *argv[]){
    if (argc!=1){// ver se foi iniciado com algum argumento
    	DBcreator();
     if(strcmp(argv[1],"adduser")==0){
-		 if (UserNumber()!=0)
+	if (UserNumber()!=0)
        DBreader();
   		addUser(argv[2]);      
     }
@@ -31,7 +31,8 @@ int main(int argc, char *argv[]){
   else{
     system("clear"); //limpa a linha de comandos
     onlineLogreset();//faz reset ao ficheiro auxiliar de utilizadores online
-    DBreader();//lê a base de dados
+    if (UserNumber()!=0)
+        DBreader();//lê a base de dados
     startServer(); //inicia o servidor
 
 
