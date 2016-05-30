@@ -39,11 +39,11 @@ int UserNumber(){ //vai abrir a base de dados e ver quantos utilizadores existem
 	}
 	fclose(fx);
 	//puts(l);
-	if (l==0)
+	/*if (l==0)
 	{
 		return 1;
 		perror("A sua base de dados, encontra-se vazia, se ainda nao utilizou a função adduser e aconcelhavel que o faça.");
-	}
+	}*/
 	return l;
 }
 

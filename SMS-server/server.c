@@ -3,8 +3,10 @@
 int main(int argc, char *argv[]){
 	int i,b;
    if (argc!=1){// ver se foi iniciado com algum argumento
-   	if(strcmp(argv[1],"adduser")==0){
-		DBreader();
+   	DBcreator();
+    if(strcmp(argv[1],"adduser")==0){
+		 if (UserNumber()!=0)
+       DBreader();
   		addUser(argv[2]);      
     }
     if(strcmp(argv[1],":")==0){//alteração de porta
