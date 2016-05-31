@@ -287,6 +287,10 @@ void globalSMS(int n){//envia uma mensagem para um utilizador ou de forma global
   printf("\n");
 	if (n==0){
 		i=findUser(user);
+    if (i==-1){
+      puts("Utilizador inválido");
+      return;
+    }
 		write(Dados[i].sock , message , strlen(message));
 		puts("Mensagem enviada com sucesso.");
 	}
