@@ -288,7 +288,7 @@ void globalSMS(int n){//envia uma mensagem para um utilizador ou de forma global
 	if (n==0){
 		i=findUser(user);
     if (i==-1){
-      puts("Utilizador inválido");
+      puts("Utilizador inválido.\nMensagem enviada sem sucesso.");
       return;
     }
 		write(Dados[i].sock , message , strlen(message));
