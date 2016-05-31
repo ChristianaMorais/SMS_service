@@ -77,7 +77,17 @@ void *connection_handler(void *socket_desc) {
 	  	if (user_code!=-1){
 	  		bzero(message, sizeof(message));
 	      	strcat(message,"2");//codigo para dizer que o login foi aceite
-	      	write(sock , message , strlen(message));
+	      	if (onlineuserChecker(user_code)){ //verificar se o utilizador esta online
+            strcat(message,"1"); //envio de codigo para desligar a ligação
+            write(sock , message , strlen(message));
+            puts("Ligação desligada, o utilizador já se encontrava online.");
+            close(sock);
+            free(socket_desc);
+            return 0;
+          }
+          else
+            strcat(message,"0");
+          write(sock , message , strlen(message));
 	      	break;
 	  	}
 	 	else{
@@ -98,8 +108,7 @@ void *connection_handler(void *socket_desc) {
 	  	}
 	}
 
-
-  	/*Autenticação da passwoard*/
+   	/*Autenticação da passwoard*/
   	n=0;//contador de tentaivas
   	while(n<=3){
   		bzero(pass, sizeof(pass));
@@ -275,7 +284,7 @@ void globalSMS(int n){//envia uma mensagem para um utilizador ou de forma global
 	message[i]='8';
 	++i;
 	message[i]='\0';
-  puts();
+  printf("\n");
 	if (n==0){
 		i=findUser(user);
 		write(Dados[i].sock , message , strlen(message));

@@ -386,3 +386,10 @@ int charpermited(char c){
 		default:return 0; break;
 	}
 }
+
+int onlineuserChecker(int code){
+	if (Dados[code].sock!=-1)
+		return 1;//utilizador encontra-se online
+	else
+		return 0;//utilizador encontrase offline
+}

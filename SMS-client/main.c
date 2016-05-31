@@ -55,7 +55,7 @@ int main(int argc, char const *argv[])
 		//ligação ao servidor
 		if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0){
 			perror("A conexão falhou.");
-			exit(EXIT_FAILURE);
+			return 0;
 		}else
 		puts(" A conexão ao servidor foi efetuada com sucesso.");
 		
@@ -76,8 +76,15 @@ int main(int argc, char const *argv[])
 
 		if (i==1){
 			perror("Atingiu o limite de logins.");
-			exit(EXIT_FAILURE);
+			return 0;
 		}
+
+		i=message[1]-'0';
+		if (i==1){
+			perror("O utilizador já se encontra online!\nNão pode fazer login.");
+			return 0;
+		}
+
 
 		/*Metodo para as passwoard's */
 		i=-1;
@@ -109,7 +116,7 @@ int main(int argc, char const *argv[])
 		fflush(stdout);
 		if (i==1){
 			perror("\nAtingiu o limite de tentativas para a passwoard.");
-			exit(EXIT_FAILURE);
+			return 0;
 		}
 		
 		pthread_t sniffer_thread;
@@ -150,7 +157,7 @@ int main(int argc, char const *argv[])
 	}
 	else{
 		perror("Chamada do cliente sem argumentos!");
-		exit(EXIT_FAILURE);
+		return 0;
 	}
 	return 0;
 } 
