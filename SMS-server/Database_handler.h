@@ -208,10 +208,11 @@ void onlineusers(int sock){ //imprime no cliente os utilizadores online
 		if (Dados[i].sock!=-1)	{
 			strcat(message," * ");
 			strcat(message,Dados[i].login);
-			strcat(message,"\n\n");
+			strcat(message,"\n");
 			flag=1;
 		}
 	}
+	strcat(message,"\n");
 	strcat(message,"1");
 	strcat(message,"\0");
 	if (flag==1){
