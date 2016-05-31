@@ -275,7 +275,7 @@ void globalSMS(int n){//envia uma mensagem para um utilizador ou de forma global
 	message[i]='8';
 	++i;
 	message[i]='\0';
-  //puts(message);
+  puts();
 	if (n==0){
 		i=findUser(user);
 		write(Dados[i].sock , message , strlen(message));
@@ -367,10 +367,10 @@ void *serveradminpanel(){
           printf("A porta do servidor foi alterada para a porta %d.\nPara que as alterações façam efeito reinicie o servidor.\n",b);
           break;
 
-          case 's':
+          case 's': //mensagem para um utilizador
           globalSMS(0); 
           break;
-          case 'm':
+          case 'm': //mensagem global
           globalSMS(1);   	
           break;
 
@@ -385,19 +385,19 @@ void *serveradminpanel(){
           case 'r':
           i=3;
           if (op[3]=='-'){
-          	if (op[4]=='a'){
+          	if (op[4]=='a'){ //eliminar todos os utilizadores
           		FILE *fx;
           		fx=fopen(FX,"w");
           		fclose(fx);
           		DBreader();
           		break;
           	}
-          	else if (op[4]=='v'){
+          	else if (op[4]=='v'){ //ver o nome dos utilizadores
           		flag=1;
           		i=6;
           	}
           	else
-    				continue; //que e eu isti faz???? nao me lembro
+    				continue; 
     		}
     		
     		bzero(user,sizeof(user));
